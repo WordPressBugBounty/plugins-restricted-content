@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Restricted Content\n"
-"POT-Creation-Date: 2024-10-28 10:25+0100\n"
+"POT-Creation-Date: 2024-12-03 10:40+0100\n"
 "PO-Revision-Date: 2018-07-27 11:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -298,7 +298,7 @@ msgid "The content visible to users who purchased Tickera tickets"
 msgstr ""
 
 #: includes/addons/restricted-shortcode/restricted-shortcode.php:76
-#: index.php:1579
+#: index.php:1598
 msgid "WooCommerce Users"
 msgstr ""
 
@@ -307,7 +307,7 @@ msgid "The content visible to users who purchased WooCommerce products."
 msgstr ""
 
 #: includes/addons/restricted-shortcode/restricted-shortcode.php:88
-#: index.php:1583
+#: index.php:1602
 msgid "Easy Digital Downloads Users"
 msgstr ""
 
@@ -591,20 +591,20 @@ msgid "Select User Roles"
 msgstr ""
 
 #: includes/admin-functions.php:335 includes/admin-functions.php:447
-#: includes/admin-functions.php:528 index.php:1760 index.php:1840
-#: index.php:1917
+#: includes/admin-functions.php:528 index.php:1779 index.php:1859
+#: index.php:1936
 msgid "Who Purchased"
 msgstr ""
 
-#: includes/admin-functions.php:338 index.php:1761
+#: includes/admin-functions.php:338 index.php:1780
 msgid "Any ticket type"
 msgstr ""
 
-#: includes/admin-functions.php:351 index.php:1764
+#: includes/admin-functions.php:351 index.php:1783
 msgid "Any ticket type for a specific event"
 msgstr ""
 
-#: includes/admin-functions.php:373 index.php:1766
+#: includes/admin-functions.php:373 index.php:1785
 msgid "Specific ticket type"
 msgstr ""
 
@@ -618,12 +618,12 @@ msgstr ""
 
 #. translators: %s: Event id.
 #. translators: %s: Event ID
-#: includes/admin-functions.php:414 index.php:1811
+#: includes/admin-functions.php:414 index.php:1830
 #, php-format
 msgid "Event ID: %s"
 msgstr ""
 
-#: includes/admin-functions.php:433 index.php:1734 index.php:1742
+#: includes/admin-functions.php:433 index.php:1753 index.php:1761
 msgid "User Capability"
 msgstr ""
 
@@ -648,32 +648,32 @@ msgid "Select Product"
 msgstr ""
 
 #: includes/admin-functions.php:481 includes/admin-functions.php:562
-#: index.php:1861 index.php:1938
+#: index.php:1880 index.php:1957
 msgid "Duration"
 msgstr ""
 
 #: includes/admin-functions.php:484 includes/admin-functions.php:565
-#: index.php:1862 index.php:1939
+#: index.php:1881 index.php:1958
 msgid "Indefinitely"
 msgstr ""
 
 #: includes/admin-functions.php:488 includes/admin-functions.php:569
-#: index.php:1863 index.php:1940
+#: index.php:1882 index.php:1959
 msgid "Limited time after purchase"
 msgstr ""
 
 #: includes/admin-functions.php:493 includes/admin-functions.php:574
-#: index.php:1866 index.php:1943
+#: index.php:1885 index.php:1962
 msgid "Days:"
 msgstr ""
 
 #: includes/admin-functions.php:501 includes/admin-functions.php:582
-#: index.php:1876 index.php:1953
+#: index.php:1895 index.php:1972
 msgid "Hours:"
 msgstr ""
 
 #: includes/admin-functions.php:509 includes/admin-functions.php:590
-#: index.php:1886 index.php:1963
+#: index.php:1905 index.php:1982
 msgid "Minutes:"
 msgstr ""
 
@@ -775,7 +775,7 @@ msgid ""
 msgstr ""
 
 #: includes/classes/class-settings-general.php:156
-#: includes/classes/class-settings-general.php:164 index.php:317 index.php:321
+#: includes/classes/class-settings-general.php:164 index.php:336 index.php:340
 msgid "You don't have required permissions to view this content."
 msgstr ""
 
@@ -799,7 +799,7 @@ msgid ""
 "content is available to it's authors only)"
 msgstr ""
 
-#: includes/classes/class-settings-general.php:172 index.php:325
+#: includes/classes/class-settings-general.php:172 index.php:344
 msgid "This content is available only to it's author."
 msgstr ""
 
@@ -811,7 +811,7 @@ msgstr ""
 msgid "A message displayed to the user that haven't purchased any tickets."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:184 index.php:329
+#: includes/classes/class-settings-general.php:184 index.php:348
 msgid ""
 "This content is restricted to the attendees only. Please purchase ticket(s) "
 "in order to access this content."
@@ -833,7 +833,7 @@ msgid ""
 "ticket type(s)."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:194 index.php:361
+#: includes/classes/class-settings-general.php:194 index.php:380
 msgid ""
 "Only attendees who purchased following ticket type(s): [rsc_tc_ticket_type] "
 "can access this content."
@@ -856,7 +856,7 @@ msgid ""
 "placeholder to show event titles with links."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:207 index.php:335
+#: includes/classes/class-settings-general.php:207 index.php:354
 msgid ""
 "Only attendees who purchased ticket(s) for following event(s): "
 "[rsc_tc_event] can access this content."
@@ -869,7 +869,7 @@ msgid ""
 msgstr ""
 
 #: includes/classes/class-settings-general.php:220
-#: includes/classes/class-settings-general.php:252 index.php:391 index.php:448
+#: includes/classes/class-settings-general.php:252 index.php:410 index.php:467
 msgid ""
 "This content is restricted to the clients only. Please purchase any product "
 "in order to access this content."
@@ -891,7 +891,7 @@ msgid ""
 "links."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:230 index.php:398
+#: includes/classes/class-settings-general.php:230 index.php:417
 msgid ""
 "Only clients who purchased following product(s): [rsc_woo_product] can "
 "access this content."
@@ -908,7 +908,7 @@ msgid ""
 "A message displayed to the visitor whose access to the content has expired"
 msgstr ""
 
-#: includes/classes/class-settings-general.php:240 index.php:424
+#: includes/classes/class-settings-general.php:240 index.php:443
 msgid ""
 "The access to this content is invalid or has expired. Please (re)purchase "
 "one of the following product(s): [rsc_woo_product_links] in order to get "
@@ -928,13 +928,13 @@ msgid ""
 "strong> placeholder to show products with links."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:262 index.php:455
+#: includes/classes/class-settings-general.php:262 index.php:474
 msgid ""
 "Only clients who purchased following product(s): [rsc_edd_product] can "
 "access this content."
 msgstr ""
 
-#: includes/classes/class-settings-general.php:272 index.php:481
+#: includes/classes/class-settings-general.php:272 index.php:500
 msgid ""
 "The access to this content is invalid or has expired. Please (re)purchase "
 "one of the following product(s): [rsc_edd_product_links] in order to get "
@@ -1055,81 +1055,81 @@ msgstr ""
 msgid "GO PREMIUM"
 msgstr ""
 
-#: index.php:196
+#: index.php:197
 #, php-format
 msgid ""
 "There was an issue determining where %s is installed. Please reinstall it."
 msgstr ""
 
-#: index.php:210 index.php:996
+#: index.php:211 index.php:1015
 msgid "Settings"
 msgstr ""
 
-#: index.php:313
+#: index.php:332
 msgid "You must log in to view this content"
 msgstr ""
 
-#: index.php:375
+#: index.php:394
 msgid "event"
 msgstr ""
 
 #. translators: %s: Current page.
-#: index.php:983
+#: index.php:1002
 #, php-format
 msgid "%s"
 msgstr ""
 
-#: index.php:1460
+#: index.php:1479
 msgid "Content Restrictions"
 msgstr ""
 
-#: index.php:1463 index.php:1467
+#: index.php:1482 index.php:1486
 msgid "Content Available To"
 msgstr ""
 
-#: index.php:1553
+#: index.php:1572
 msgid "Everyone"
 msgstr ""
 
-#: index.php:1554
+#: index.php:1573
 msgid "Logged in users"
 msgstr ""
 
-#: index.php:1555
+#: index.php:1574
 msgid "Users with specific role"
 msgstr ""
 
-#: index.php:1556
+#: index.php:1575
 msgid "Users with specific capability"
 msgstr ""
 
-#: index.php:1557
+#: index.php:1576
 msgid "Author"
 msgstr ""
 
 #. translators: %s: Tickera name.
-#: index.php:1575
+#: index.php:1594
 #, php-format
 msgid "%s Users"
 msgstr ""
 
 #. translators: %s: Restrict content setting page url.
-#: index.php:1590
+#: index.php:1609
 #, php-format
 msgid ""
 "The content is restricted by the global rules set <a target=\"_blank\" href="
 "\"%s\">here</a>"
 msgstr ""
 
-#: index.php:1696 index.php:1718
+#: index.php:1715 index.php:1737
 msgid "Select a User Role"
 msgstr ""
 
-#: index.php:1841 index.php:1918
+#: index.php:1860 index.php:1937
 msgid "Any product"
 msgstr ""
 
-#: index.php:1842 index.php:1919
+#: index.php:1861 index.php:1938
 msgid "Specific product"
 msgstr ""
 
