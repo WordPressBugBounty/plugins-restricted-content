@@ -6,7 +6,7 @@
  * Description: Easily restrict access to the content on your website to logged in users, members with a specific role or capability, to it's author, Tickera users, WooCommerce or Easy Digital Downloads members who made any purchases or purchased a specific item.
  * Author: Restrict
  * Author URI: https://restrict.io/
- * Version: 2.2.9
+ * Version: 2.3.0
  * Text Domain: rsc
  * Domain Path: languages
  * License: GPLv2 or later

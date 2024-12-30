@@ -48,14 +48,17 @@ function rsc_check_if_shop_page_should_be_restricted( $return_message = false ) 
 
 add_action( 'woocommerce_before_shop_loop', 'rsc_maybe_hide_main_shop_content_before' );
 function rsc_maybe_hide_main_shop_content_before() {
-    ob_start();
+    $message = rsc_check_if_shop_page_should_be_restricted( true );
+    if ( false !== $message ) {
+        ob_start();
+    }
 }
 
 add_action( 'woocommerce_after_shop_loop', 'rsc_maybe_hide_main_shop_content_after' );
 function rsc_maybe_hide_main_shop_content_after() {
-    $content = ob_get_clean();
     $message = rsc_check_if_shop_page_should_be_restricted( true );
-    echo wp_kses_post( ( false !== $message ) ? $message : $content );
+    if ( false !== $message ) {
+        ob_get_clean(); // ob_get_clean() to invalidate the current content.
+        echo wp_kses_post( $message );
+    }
 }
-
-?>

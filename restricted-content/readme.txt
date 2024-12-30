@@ -4,7 +4,7 @@ Donate link: https://restrict.io
 Tags: restricted content, restrict content, restrict access, protect content, restrict site
 Requires at least: 4.3
 Tested up to: 6.7.1
-Stable tag: 2.2.9
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,9 @@ Stuck? Check out the [plugin documentation](https://restrict.io/documentation/?u
 7. Content availability metabox for WooCommerce users
 
 == Changelog ==
+
+= 2.3.0 30/12/2024 =
+* Broken Woocommerce Shop page's filters. [Fixed]
 
 = 2.2.9 03/12/2024 =
 * Hide restricted content from search queries.
