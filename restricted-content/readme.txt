@@ -3,8 +3,8 @@ Contributors: restrict, tickera, freemius
 Donate link: https://restrict.io
 Tags: restricted content, restrict content, restrict access, protect content, restrict site
 Requires at least: 4.3
-Tested up to: 6.7.1
-Stable tag: 2.3.1
+Tested up to: 6.7.2
+Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Stuck? Check out the [plugin documentation](https://restrict.io/documentation/?u
 7. Content availability metabox for WooCommerce users
 
 == Changelog ==
+
+= 2.3.2 17/02/2025 =
+* Additional patch applied to hide restricted content from search queries.
+* Restrict guest user from accessing the content if it is configured with "WooCommerce Users > Specific product > Limited time after purchase".
 
 = 2.3.1 27/01/2025 =
 * Freemius SDK updated to v2.11

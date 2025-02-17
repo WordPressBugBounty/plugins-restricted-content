@@ -6,7 +6,7 @@
  * Description: Easily restrict access to the content on your website to logged in users, members with a specific role or capability, to it's author, Tickera users, WooCommerce or Easy Digital Downloads members who made any purchases or purchased a specific item.
  * Author: Restrict
  * Author URI: https://restrict.io/
- * Version: 2.3.1
+ * Version: 2.3.2
  * Text Domain: rsc
  * Domain Path: languages
  * License: GPLv2 or later
@@ -190,7 +190,9 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          */
         function restrict_search( $query ) {
             if ( $query->is_search && !is_admin() && $query->is_main_query() || defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $query->query_vars['s'] ) ) {
-                $query->set( 'meta_query', [
+                $meta_query = $query->get( 'meta_query' );
+                $meta_query = ( $meta_query ? $meta_query : [] );
+                $meta_query[] = [
                     'relation' => 'OR',
                     [
                         'key'     => '_rsc_content_availability',
@@ -200,7 +202,8 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         'key'   => '_rsc_content_availability',
                         'value' => 'everyone',
                     ],
-                ] );
+                ];
+                $query->set( 'meta_query', $meta_query );
             }
         }
 
@@ -962,6 +965,10 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             'hours'   => 0,
             'minutes' => 0,
         ) ) {
+            // Guest User
+            if ( !$user_id ) {
+                return false;
+            }
             $valid_limited_purchases = 0;
             foreach ( $products_ids as $product_id ) {
                 $product_purchased_last_date = Restricted_Content::get_product_purchased_last_date( (int) $user_id, (int) $product_id );
