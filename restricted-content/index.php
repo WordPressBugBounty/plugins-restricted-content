@@ -6,7 +6,7 @@
  * Description: Easily restrict access to the content on your website to logged in users, members with a specific role or capability, to it's author, Tickera users, WooCommerce or Easy Digital Downloads members who made any purchases or purchased a specific item.
  * Author: Restrict
  * Author URI: https://restrict.io/
- * Version: 2.3.2
+ * Version: 2.3.3
  * Text Domain: rsc
  * Domain Path: languages
  * License: GPLv2 or later
@@ -622,7 +622,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         }
                         break;
                     default:
-                        $message = false;
+                        $message = apply_filters( 'rsc_access_message', false, $value_array );
                 }
             }
             if ( $message !== false && empty( $message ) ) {
@@ -865,7 +865,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     }
                     break;
                 default:
-                    return true;
+                    return apply_filters( 'rsc_can_access', true, $value_array );
             }
         }
 
