@@ -6,7 +6,7 @@
  * Description: Easily restrict access to the content on your website to logged in users, members with a specific role or capability, to it's author, Tickera users, WooCommerce or Easy Digital Downloads members who made any purchases or purchased a specific item.
  * Author: Restrict
  * Author URI: https://restrict.io/
- * Version: 2.3.3
+ * Version: 2.3.4
  * Text Domain: rsc
  * Domain Path: languages
  * License: GPLv2 or later
@@ -96,9 +96,14 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             $this->init_vars();
             add_action( 'plugins_loaded', array($this, 'localization'), 9 );
             add_action( 'admin_enqueue_scripts', array($this, 'admin_header') );
-            add_action( 'add_meta_boxes', array($this, 'add_metabox') );
+            add_action(
+                'add_meta_boxes',
+                array($this, 'add_metabox'),
+                10,
+                2
+            );
             add_action( 'save_post', array($this, 'save_metabox_values') );
-            add_filter( 'the_content', array($this, 'maybe_block_content') );
+            add_filter( 'the_content', array($this, 'maybe_block_content'), 90 );
             add_filter( 'rsc_the_content', array($this, 'maybe_block_content') );
             add_filter(
                 'plugin_action_links_' . plugin_basename( __FILE__ ),
@@ -628,6 +633,15 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             if ( $message !== false && empty( $message ) ) {
                 $message = ' ';
             }
+            // Contents are being blocked
+            if ( $message ) {
+                // Redirect to specified url
+                $redirect_url = apply_filters( 'rsc_redirect_blocked_content', false, $type );
+                if ( $redirect_url ) {
+                    wp_redirect( $redirect_url );
+                    exit;
+                }
+            }
             return ( !$message ? html_entity_decode( $message ) : '<div class="rsc_message">' . html_entity_decode( stripslashes( $message ) ) . '</div>' );
             //false means that user CAN access the content, otherwise a message will be shown (a reason why user can access content or who can access the content)
         }
@@ -743,7 +757,8 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     switch ( $rsc_woo_users ) {
                         case 'anything':
                             // At least one purchase of any product is required for accessing the content
-                            return ( Restricted_Content::get_woo_paid_user_orders_count() > 0 ? true : false );
+                            $test = ( Restricted_Content::get_woo_paid_user_orders_count() > 0 ? true : false );
+                            return $test;
                             break;
                         case 'product':
                             // A purchase of a specific product is required for accessing the content
@@ -1034,16 +1049,23 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         }
 
         public static function get_woo_paid_user_orders_count( $event_id = false, $product_id = false ) {
-            global $wpdb;
             $user_id = get_current_user_id();
             if ( $user_id == 0 ) {
                 return 0;
             }
             if ( !$event_id && !$product_id ) {
-                // Overall paid orders
-                $query = $wpdb->prepare( "SELECT COUNT(p.ID) FROM {$wpdb->posts} p, {$wpdb->postmeta} pm1, {$wpdb->postmeta} pm2\r\n                    WHERE p.ID = pm1.post_id AND p.ID = pm2.post_id\r\n                    AND (p.post_status = 'wc-completed' OR p.post_status = 'wc-processing')\r\n                    AND p.post_type = 'shop_order'\r\n                    AND pm1.meta_key = '_customer_user' AND pm2.meta_value=%d", (int) $user_id );
-                $paid_orders_count = $wpdb->get_var( $query );
-                return (int) $paid_orders_count;
+                $query = new WC_Order_Query([
+                    'customer' => $user_id,
+                    'status'   => [
+                        'wc-completed',
+                        'completed',
+                        'wc-processing',
+                        'processing'
+                    ],
+                    'limit'    => -1,
+                ]);
+                $orders = $query->get_orders();
+                return count( $orders );
             }
             if ( !$event_id && $product_id ) {
                 // Paid orders for specific ticket type
@@ -1261,7 +1283,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         /**
          * Adds metabox for content availability
          */
-        function add_metabox() {
+        function add_metabox( $screen_id, $data ) {
             global $post_type;
             $is_comment = ( isset( $_GET['action'] ) && $_GET['action'] == 'editcomment' ? true : false );
             $rsc_skip_post_types = rsc_skip_post_types();
@@ -1286,7 +1308,14 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             'Restricted_Content::show_metabox',
                             null,
                             'normal',
-                            'low'
+                            'low',
+                            [
+                                'screen_id'       => $screen_id,
+                                'data'            => $data,
+                                'metabox_type'    => 'post',
+                                'widget'          => false,
+                                'widget_instance' => false,
+                            ]
                         );
                     }
                 } else {
@@ -1296,7 +1325,14 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         'Restricted_Content::show_metabox',
                         null,
                         'normal',
-                        'low'
+                        'low',
+                        [
+                            'screen_id'       => $screen_id,
+                            'data'            => $data,
+                            'metabox_type'    => 'post',
+                            'widget'          => false,
+                            'widget_instance' => false,
+                        ]
                     );
                 }
             }
@@ -1453,25 +1489,24 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          *
          * @param type $post
          */
-        public static function show_metabox(
-            $post,
-            $metabox_type = 'post',
-            $widget = false,
-            $widget_instance = false
-        ) {
-            //possible values: 'post' or 'taxonomy'
+        public static function show_metabox( $post, $data ) {
+            // Possible values: 'post' or 'taxonomy'
             $is_menu_item = false;
-            $restriction_options = Restricted_Content::get_restriction_options( $metabox_type, $widget, $widget_instance );
+            $restriction_options = Restricted_Content::get_restriction_options( $data['args']['metabox_type'], $data['args']['widget'], $data['args']['widget_instance'] );
             $sub_metaboxes_functions = array();
-            if ( is_array( $metabox_type ) || is_string( $metabox_type ) && $metabox_type == 'post' ) {
-                $id = $post->ID;
-                $metabox_type = 'post';
+            if ( is_array( $data['args']['metabox_type'] ) || is_string( $data['args']['metabox_type'] ) && $data['args']['metabox_type'] == 'post' ) {
+                if ( in_array( $data['args']['screen_id'], ['shop_order', 'woocommerce_page_wc-orders'] ) ) {
+                    $id = $data['args']['data']->get_id();
+                } else {
+                    $id = $post->ID;
+                }
+                $data['args']['metabox_type'] = 'post';
             } else {
                 $id = ( isset( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : false );
             }
             if ( $id === false ) {
                 // For menu item
-                $id = (int) $widget_instance;
+                $id = (int) $data['args']['widget_instance'];
                 $is_menu_item = true;
             }
             $rsc_content_availability = '';
@@ -1480,15 +1515,15 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     $id,
                     '_rsc_content_availability',
                     true,
-                    $metabox_type,
-                    $widget,
-                    $widget_instance
+                    $data['args']['metabox_type'],
+                    $data['args']['widget'],
+                    $data['args']['widget_instance']
                 );
                 if ( empty( $rsc_content_availability ) ) {
                     $rsc_content_availability = 'everyone';
                 }
             }
-            $restriction_options_select = '<select name="' . Restricted_Content::get_field_name( '_rsc_content_availability_rsc_post_meta', $widget, $widget_instance ) . '" class="rsc_content_availability">';
+            $restriction_options_select = '<select name="' . Restricted_Content::get_field_name( '_rsc_content_availability_rsc_post_meta', $data['args']['widget'], $data['args']['widget_instance'] ) . '" class="rsc_content_availability">';
             foreach ( $restriction_options as $restriction_option_key => $restriction_option_values ) {
                 $selected = ( $rsc_content_availability == $restriction_option_key ? 'selected' : '' );
                 $restriction_options_select .= '<option value="' . esc_attr( $restriction_option_key ) . '" ' . $selected . '>' . $restriction_option_values[0] . '</option>';
@@ -1527,7 +1562,11 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             $return = false;
             if ( is_array( $metabox_type ) || is_string( $metabox_type ) && $metabox_type == 'post' ) {
                 $metabox_type == 'post';
-                $id = $post->ID;
+                if ( current_user_can( 'manage_options' ) && isset( $_GET['page'] ) && $_GET['page'] == 'wc-orders' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' && isset( $_GET['id'] ) && $_GET['id'] ) {
+                    $id = $_GET['id'];
+                } else {
+                    $id = $post->ID;
+                }
             } else {
                 $id = ( isset( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : false );
             }

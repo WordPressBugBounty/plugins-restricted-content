@@ -280,7 +280,17 @@ if ( ! function_exists( 'rsc_show_post_type_options' ) ) {
         $post_type = str_replace( 'post_type_', '', $field_name ); ?>
         <div class="rsc_outside_wrap">
             <div class="form-field term-slug-wrap rsc_metabox">
-                <?php $rsc->show_metabox( false, 'post_type', 'post_type', $post_type ); ?>
+                <?php
+                    $rsc->show_metabox( false, [
+                        'args' => [
+                            'screen_id' => false,
+                            'data' => [],
+                            'metabox_type' => 'post_type',
+                            'widget' => 'post_type',
+                            'widget_instance' => $post_type
+                        ]
+                    ] );
+                ?>
             </div>
         </div><?php
         //rsc_yes_no('rsc_post_type_'.$post_type.'_restricted', 'no');

@@ -3,8 +3,8 @@ Contributors: restrict, tickera, freemius
 Donate link: https://restrict.io
 Tags: restricted content, restrict content, restrict access, protect content, restrict site
 Requires at least: 4.3
-Tested up to: 6.7.2
-Stable tag: 2.3.3
+Tested up to: 6.9
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,10 @@ Stuck? Check out the [plugin documentation](https://restrict.io/documentation/?u
 7. Content availability metabox for WooCommerce users
 
 == Changelog ==
+
+= 2.3.4 08/01/2026 =
+* New "rsc_redirect_blocked_content" filter hook to redirect restricted content. Argument: $url, $restriction_type
+* Woocommerce High-Performance Order Storage Integration.
 
 = 2.3.3 19/02/2025 =
 * Additional "rsc_can_access" and "rsc_access_message" filter hooks. Arguments: Bool (default: true), $value_array

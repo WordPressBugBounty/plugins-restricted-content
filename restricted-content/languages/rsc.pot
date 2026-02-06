@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Restricted Content\n"
-"POT-Creation-Date: 2025-02-19 10:13+0100\n"
+"POT-Creation-Date: 2026-01-08 13:18+0100\n"
 "PO-Revision-Date: 2018-07-27 11:20+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -55,7 +55,7 @@ msgid ""
 msgstr ""
 
 #: includes/addons/category/category.php:79
-#: includes/addons/category/category.php:94
+#: includes/addons/category/category.php:104
 msgid "Posts from category visible to:"
 msgstr ""
 
@@ -298,7 +298,7 @@ msgid "The content visible to users who purchased Tickera tickets"
 msgstr ""
 
 #: includes/addons/restricted-shortcode/restricted-shortcode.php:76
-#: index.php:1608
+#: index.php:1629
 msgid "WooCommerce Users"
 msgstr ""
 
@@ -307,7 +307,7 @@ msgid "The content visible to users who purchased WooCommerce products."
 msgstr ""
 
 #: includes/addons/restricted-shortcode/restricted-shortcode.php:88
-#: index.php:1612
+#: index.php:1633
 msgid "Easy Digital Downloads Users"
 msgstr ""
 
@@ -577,103 +577,103 @@ msgstr ""
 msgid "Your content here"
 msgstr ""
 
-#: includes/admin-functions.php:298 includes/admin-functions.php:307
-#: includes/admin-functions.php:329 includes/admin-functions.php:382
-#: includes/admin-functions.php:402 includes/admin-functions.php:425
-#: includes/admin-functions.php:441 includes/admin-functions.php:468
-#: includes/admin-functions.php:521 includes/admin-functions.php:549
-#: includes/admin-functions.php:602 includes/admin-functions.php:612
+#: includes/admin-functions.php:308 includes/admin-functions.php:317
+#: includes/admin-functions.php:339 includes/admin-functions.php:392
+#: includes/admin-functions.php:412 includes/admin-functions.php:435
+#: includes/admin-functions.php:451 includes/admin-functions.php:478
+#: includes/admin-functions.php:531 includes/admin-functions.php:559
+#: includes/admin-functions.php:612 includes/admin-functions.php:622
 msgid "Copy"
 msgstr ""
 
-#: includes/admin-functions.php:314
+#: includes/admin-functions.php:324
 msgid "Select User Roles"
 msgstr ""
 
-#: includes/admin-functions.php:335 includes/admin-functions.php:447
-#: includes/admin-functions.php:528 index.php:1789 index.php:1869
-#: index.php:1946
+#: includes/admin-functions.php:345 includes/admin-functions.php:457
+#: includes/admin-functions.php:538 index.php:1824 index.php:1904
+#: index.php:1981
 msgid "Who Purchased"
 msgstr ""
 
-#: includes/admin-functions.php:338 index.php:1790
+#: includes/admin-functions.php:348 index.php:1825
 msgid "Any ticket type"
 msgstr ""
 
-#: includes/admin-functions.php:351 index.php:1793
+#: includes/admin-functions.php:361 index.php:1828
 msgid "Any ticket type for a specific event"
 msgstr ""
 
-#: includes/admin-functions.php:373 index.php:1795
+#: includes/admin-functions.php:383 index.php:1830
 msgid "Specific ticket type"
 msgstr ""
 
-#: includes/admin-functions.php:387
+#: includes/admin-functions.php:397
 msgid "Select Events"
 msgstr ""
 
-#: includes/admin-functions.php:408
+#: includes/admin-functions.php:418
 msgid "Select Ticket Types"
 msgstr ""
 
 #. translators: %s: Event id.
 #. translators: %s: Event ID
-#: includes/admin-functions.php:414 index.php:1840
+#: includes/admin-functions.php:424 index.php:1875
 #, php-format
 msgid "Event ID: %s"
 msgstr ""
 
-#: includes/admin-functions.php:433 index.php:1763 index.php:1771
+#: includes/admin-functions.php:443 index.php:1798 index.php:1806
 msgid "User Capability"
 msgstr ""
 
-#: includes/admin-functions.php:435
+#: includes/admin-functions.php:445
 msgid "manage_options"
 msgstr ""
 
-#: includes/admin-functions.php:450 includes/admin-functions.php:531
+#: includes/admin-functions.php:460 includes/admin-functions.php:541
 #: includes/classes/class-settings-general.php:216
 #: includes/classes/class-settings-general.php:248
 msgid "Any Product"
 msgstr ""
 
-#: includes/admin-functions.php:459 includes/admin-functions.php:540
+#: includes/admin-functions.php:469 includes/admin-functions.php:550
 #: includes/classes/class-settings-general.php:225
 #: includes/classes/class-settings-general.php:257
 msgid "Specific Product"
 msgstr ""
 
-#: includes/admin-functions.php:474 includes/admin-functions.php:555
+#: includes/admin-functions.php:484 includes/admin-functions.php:565
 msgid "Select Product"
 msgstr ""
 
-#: includes/admin-functions.php:481 includes/admin-functions.php:562
-#: index.php:1890 index.php:1967
+#: includes/admin-functions.php:491 includes/admin-functions.php:572
+#: index.php:1925 index.php:2002
 msgid "Duration"
 msgstr ""
 
-#: includes/admin-functions.php:484 includes/admin-functions.php:565
-#: index.php:1891 index.php:1968
+#: includes/admin-functions.php:494 includes/admin-functions.php:575
+#: index.php:1926 index.php:2003
 msgid "Indefinitely"
 msgstr ""
 
-#: includes/admin-functions.php:488 includes/admin-functions.php:569
-#: index.php:1892 index.php:1969
+#: includes/admin-functions.php:498 includes/admin-functions.php:579
+#: index.php:1927 index.php:2004
 msgid "Limited time after purchase"
 msgstr ""
 
-#: includes/admin-functions.php:493 includes/admin-functions.php:574
-#: index.php:1895 index.php:1972
+#: includes/admin-functions.php:503 includes/admin-functions.php:584
+#: index.php:1930 index.php:2007
 msgid "Days:"
 msgstr ""
 
-#: includes/admin-functions.php:501 includes/admin-functions.php:582
-#: index.php:1905 index.php:1982
+#: includes/admin-functions.php:511 includes/admin-functions.php:592
+#: index.php:1940 index.php:2017
 msgid "Hours:"
 msgstr ""
 
-#: includes/admin-functions.php:509 includes/admin-functions.php:590
-#: index.php:1915 index.php:1992
+#: includes/admin-functions.php:519 includes/admin-functions.php:600
+#: index.php:1950 index.php:2027
 msgid "Minutes:"
 msgstr ""
 
@@ -1061,7 +1061,7 @@ msgid ""
 "There was an issue determining where %s is installed. Please reinstall it."
 msgstr ""
 
-#: index.php:211 index.php:1020
+#: index.php:211 index.php:1032
 msgid "Settings"
 msgstr ""
 
@@ -1074,62 +1074,62 @@ msgid "event"
 msgstr ""
 
 #. translators: %s: Current page.
-#: index.php:1007
+#: index.php:1019
 #, php-format
 msgid "%s"
 msgstr ""
 
-#: index.php:1489
+#: index.php:1496
 msgid "Content Restrictions"
 msgstr ""
 
-#: index.php:1492 index.php:1496
+#: index.php:1500 index.php:1511
 msgid "Content Available To"
 msgstr ""
 
-#: index.php:1582
+#: index.php:1603
 msgid "Everyone"
 msgstr ""
 
-#: index.php:1583
+#: index.php:1604
 msgid "Logged in users"
 msgstr ""
 
-#: index.php:1584
+#: index.php:1605
 msgid "Users with specific role"
 msgstr ""
 
-#: index.php:1585
+#: index.php:1606
 msgid "Users with specific capability"
 msgstr ""
 
-#: index.php:1586
+#: index.php:1607
 msgid "Author"
 msgstr ""
 
 #. translators: %s: Tickera name.
-#: index.php:1604
+#: index.php:1625
 #, php-format
 msgid "%s Users"
 msgstr ""
 
 #. translators: %s: Restrict content setting page url.
-#: index.php:1619
+#: index.php:1640
 #, php-format
 msgid ""
 "The content is restricted by the global rules set <a target=\"_blank\" href="
 "\"%s\">here</a>"
 msgstr ""
 
-#: index.php:1725 index.php:1747
+#: index.php:1760 index.php:1782
 msgid "Select a User Role"
 msgstr ""
 
-#: index.php:1870 index.php:1947
+#: index.php:1905 index.php:1982
 msgid "Any product"
 msgstr ""
 
-#: index.php:1871 index.php:1948
+#: index.php:1906 index.php:1983
 msgid "Specific product"
 msgstr ""
 
