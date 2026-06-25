@@ -2,9 +2,9 @@
 Contributors: restrict, tickera, freemius
 Donate link: https://restrict.io
 Tags: restricted content, restrict content, restrict access, protect content, restrict site
-Requires at least: 4.3
-Tested up to: 6.9
-Stable tag: 2.3.4
+Requires at least: 5.1
+Tested up to: 7.0
+Stable tag: 2.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,10 @@ Stuck? Check out the [plugin documentation](https://restrict.io/documentation/?u
 
 == Changelog ==
 
+= 2.3.5 25/06/2026 =
+* Freemius SDK updated to v2.13.1
+* Wordpress v7.0 Compliance
+
 = 2.3.4 08/01/2026 =
 * New "rsc_redirect_blocked_content" filter hook to redirect restricted content. Argument: $url, $restriction_type
 * Woocommerce High-Performance Order Storage Integration.
@@ -133,95 +137,6 @@ Stuck? Check out the [plugin documentation](https://restrict.io/documentation/?u
 = 2.2.0 =
 * Wordpress 6.0 compatibility
 
-= 2.1.9 =
-* Freemius SDK update
-
-= 2.1.8 =
-* Fixed white label feature
-* Tested up to 5.7.2 version of WordPress
-
-= 2.1.7 =
-* Tested up to 5.6.1 version of WordPress
-* Added new premium feature: bots & web crawlers exclusions which (optionally) allow access to your site content by search engines and benefit from SEO juice even from protected / hidden content.
-
-= 2.1.6 =
-* Fixed issue with WooCommerce SPECIFIC PRODUCT (LIMITED TIME) message
-
-= 2.1.5 =
-* Added integration with Easy Digital Downloads plugin (https://wordpress.org/plugins/easy-digital-downloads/)
-
-= 2.1.4 =
-* Added support for Page Builder by SiteOrigin plugin (https://wordpress.org/plugins/siteorigin-panels/)
-
-= 2.1.3 =
-* Fixed conflict with "Yoast SEO" plugin (restricted select box was invisible on edit category page when Yoast plugin is active)
-* Fixed deprecated hook notice (edit_category_form_fields)
-
-= 2.1.2 =
-* Added time limit option for WooCommerce products
-
-= 2.1.1 =
-* Fix for automatic updates of the free version (clients with previous versions need to update it manually first)
-
-= 2.1.0 =
-* Fixed bug with WooCommerce categories
-
-= 2.0.9 =
-* Fixed issue with rendering Elementor shortcodes as a restricted messages (now supports Shortcode Elementor https://wordpress.org/plugins/shortcode-elementor/, AnyWhere Elementor https://wordpress.org/plugins/anywhere-elementor/ and similar plugins)
-
-= 2.0.8 =
-* Added integration for Simple URLs plugin (https://wordpress.org/plugins/simple-urls/)
-* Removed "Content available to" select box from the shop_order post type (and similar post types where the box isn't needed)
-* Added global restriction for post types at once (premium version)
-* Added restriction for WooCommerce shop page (which is actually product archive page shown via template)
-* Various code improvements
-
-= 2.0.7 =
-* Added restriction to post / page author (and the administrators)
-
-= 2.0.6 =
-* Added admin javascript browser cache control based on the plugin's version
-
-= 2.0.5 =
-* Added white label option in the premium version. Usage: just put a define('RSC_PLUGIN_TITLE', 'Custom Name');
-
-= 2.0.4 =
-* Added new placeholders for WooCommerce (rsc_woo_product_links) and Tickera (rsc_tc_event_links) so you can now show products / events titles with links
-* Small wording changes on the general page (admin area)
-
-= 2.0.3 =
-* Tested up to WordPress 5.4.1
-* Fixed bug with WooCommerce post / page restrictions (when a specific product is selected)
-* Fixed bug with Tickera post / page restrictions (when a specific ticket type / event is selected)
-
-= 2.0.2 =
-* IMPORTANT UPDATE: fixed the issue with saving and merging saved options
-
-= 2.0.1 =
-* Fixed fatal error in the FREE version upon activation
-
-= 2.0 =
-* Code refactoring
-* Upgraded one-line text messages with the WP Editor
-* Added option to hide post comments for restricted posts
-* Styling changes
-* Freemius integration
-* Rebrended from "Restricted Content" to "Restrict"
-
-= 1.0.4 =
-* Tested for WordPress 5.3.2
-
-= 1.0.3 =
-* Removed restricted content from tc_order custom post type
-* Added new hook for developers (rsc_skip_post_types)
-* Fixed wp_localize_script var
-
-= 1.0.2 =
-* Updated language file
-
-= 1.0.1 =
-* Fixed issue with empty restriction messages
-* Removed content availability box from Tickera ticket type screen in the admin
 
 = 1.0 =
 * First release

@@ -129,45 +129,56 @@
             } );
         } );
 
-        $( ".rsc_outside_wrap select" ).chosen( { disable_search_threshold: 5, allow_single_deselect: false } );
+        function rsc_filter_block_widget_selects( selects ) {
+            return selects.filter( function () {
+                return !$( this ).closest( '.wp-block-legacy-widget__edit-form' ).length;
+            } );
+        }
+
+        rsc_filter_block_widget_selects( $( ".rsc_outside_wrap select" ) ).chosen( { disable_search_threshold: 5, allow_single_deselect: false } );
 
         // widget-added
         $( document ).on( 'widget-updated', function ( e, widget ) {
 
             // rsc_chosen();
-            widget.find( '.rsc_metabox select' ).chosen( {
+            var widget_selects = rsc_filter_block_widget_selects( widget.find( '.rsc_metabox select' ) );
+
+            widget_selects.chosen( {
                 disable_search_threshold: 10,
                 allow_single_deselect: false
             } );
 
-            widget.find( '.rsc_metabox select' ).css( 'width', '25em' );
-            widget.find( '.rsc_metabox select' ).css( 'display', 'block' );
+            widget_selects.css( 'width', '25em' );
+            widget_selects.css( 'display', 'block' );
 
-            widget.find( '.rsc_metabox select' ).css( 'display', 'none' );
+            widget_selects.css( 'display', 'none' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'width', '100%' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'max-width', '25em' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'min-width', '1em' );
 
-            widget.find( '.rsc_metabox select' ).trigger( "chosen:updated" );
+            widget_selects.trigger( "chosen:updated" );
             rsc_reopen_selected();
         } );
 
         $( document ).on( 'widget-added', function ( e, widget ) {
 
-            widget.find( '.rsc_metabox select' ).chosen( {
+            var widget_selects = rsc_filter_block_widget_selects( widget.find( '.rsc_metabox select' ) );
+
+            widget_selects.chosen( {
                 disable_search_threshold: 10,
                 allow_single_deselect: false
             } );
 
-            widget.find( '.rsc_metabox select' ).css( 'width', '25em' );
-            widget.find( '.rsc_metabox select' ).css( 'display', 'block' );
+            widget_selects.css( 'width', '25em' );
+            widget_selects.css( 'display', 'block' );
 
-            widget.find( '.rsc_metabox select' ).css( 'display', 'none' );
+            widget_selects.css( 'display', 'none' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'width', '100%' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'max-width', '25em' );
             widget.find( '.rsc_metabox .chosen-container' ).css( 'min-width', '1em' );
 
-            widget.find( '.rsc_metabox select' ).trigger( "chosen:updated" );
+            widget_selects.trigger( "chosen:updated" );
+            rsc_reopen_selected();
         } );
 
         function rsc_reopen_selected() {
@@ -181,24 +192,89 @@
 
         rsc_reopen_selected();
 
+        if ( window.MutationObserver ) {
+            var rsc_widget_observer = new MutationObserver( function ( mutations ) {
+                var has_rsc_metabox = false;
+
+                for ( var i = 0; i < mutations.length; i++ ) {
+                    $( mutations[ i ].addedNodes ).each( function () {
+                        if ( this.nodeType === 1 && ( $( this ).hasClass( 'rsc_metabox' ) || $( this ).find( '.rsc_metabox' ).length ) ) {
+                            has_rsc_metabox = true;
+                        }
+                    } );
+
+                    if ( has_rsc_metabox ) {
+                        break;
+                    }
+                }
+
+                if ( has_rsc_metabox ) {
+                    rsc_reopen_selected();
+                }
+            } );
+
+            rsc_widget_observer.observe( document.body, {
+                childList: true,
+                subtree: true
+            } );
+        }
+
         $( document ).on( 'change', '.rsc_content_availability', function ( e ) {
             rsc_content_availability_options( e.target );
             rsc_tickera_users_options( e.target );
             rsc_woo_users_options( e.target );
             rsc_edd_users_options( e.target );
+            rsc_notify_widget_editor_change( e.target );
         } );
 
         $( document ).on( 'change', '.rsc_tickera_radio', function ( e ) {
             rsc_tickera_users_options( e.target );
+            rsc_notify_widget_editor_change( e.target );
         } );
 
         $( document ).on( 'change', '.rsc_woo_radio', function ( e ) {
             rsc_woo_users_options( e.target );
+            rsc_notify_widget_editor_change( e.target );
         } );
 
         $( document ).on( 'change', '.rsc_edd_radio', function ( e ) {
             rsc_edd_users_options( e.target );
+            rsc_notify_widget_editor_change( e.target );
         } );
+
+        $( document ).on( 'change', '.rsc_metabox input, .rsc_metabox select', function ( e ) {
+            rsc_notify_widget_editor_change( e.target );
+        } );
+
+        function rsc_notify_widget_editor_change( obj ) {
+
+            if ( !obj || !$( obj ).closest( '.widgets-holder-wrap, .wp-block-legacy-widget, .wp-block-legacy-widget__edit-form' ).length ) {
+                return;
+            }
+
+            if ( obj.rscNotifyingWidgetEditor ) {
+                return;
+            }
+
+            obj.rscNotifyingWidgetEditor = true;
+            obj.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+            obj.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
+            var form = $( obj ).closest( 'form' )[ 0 ];
+
+            if ( form ) {
+                form.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+                form.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+                $( form ).trigger( 'input' );
+                $( form ).trigger( 'change' );
+
+                if ( $( form ).closest( '.wp-block-legacy-widget__edit-form' ).length ) {
+                    $( form ).trigger( 'submit' );
+                }
+            }
+
+            obj.rscNotifyingWidgetEditor = false;
+        }
 
         function rsc_edd_users_options( obj ) {
 
@@ -276,20 +352,22 @@
 
         function rsc_chosen() {
 
-            $( '#rsc_metabox select, .rsc_metabox select' ).chosen( {
+            var rsc_selects = rsc_filter_block_widget_selects( $( '#rsc_metabox select, .rsc_metabox select' ) );
+
+            rsc_selects.chosen( {
                 disable_search_threshold: 10,
                 allow_single_deselect: false
             } );
 
-            $( '#rsc_metabox select, .rsc_metabox select' ).css( 'width', '25em' );
-            $( '#rsc_metabox select, .rsc_metabox select' ).css( 'display', 'block' );
+            rsc_selects.css( 'width', '25em' );
+            rsc_selects.css( 'display', 'block' );
 
-            $( '#rsc_metabox select, .rsc_metabox select' ).css( 'display', 'none' );
+            rsc_selects.css( 'display', 'none' );
             $( '#rsc_metabox .chosen-container, .rsc_metabox .chosen-container' ).css( 'width', '100%' );
             $( '#rsc_metabox .chosen-container, .rsc_metabox .chosen-container' ).css( 'max-width', '25em' );
             $( '#rsc_metabox .chosen-container, .rsc_metabox .chosen-container' ).css( 'min-width', '1em' );
 
-            $( '#rsc_metabox select, .rsc_metabox select' ).trigger( 'chosen:updated' );
+            rsc_selects.trigger( 'chosen:updated' );
         }
 
         rsc_chosen();

@@ -75,13 +75,23 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 			$obj = new $obj_class( $post_id );
 
 			if ( $show_title ) { ?>
-				<label><?php echo rsc_esc_html( $field[ 'field_title' ] ); ?><?php
+				<label><?php
+				    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+				    echo rsc_esc_html( $field[ 'field_title' ] ); ?><?php
 				}
 				// Function
 				if ( $field[ 'field_type' ] == 'function' ) {
-					eval( $field[ 'function' ] . '("' . $field[ 'field_name' ] . '"' . (isset( $post_id ) ? ',' . $post_id : '') . ');' );
+					if ( isset( $field[ 'function' ] ) && is_callable( $field[ 'function' ] ) ) {
+						if ( isset( $post_id ) ) {
+							call_user_func( $field[ 'function' ], $field[ 'field_name' ], $post_id );
+						} else {
+							call_user_func( $field[ 'function' ], $field[ 'field_name' ] );
+						}
+					}
 					if ( isset( $field[ 'field_description' ] ) ) { ?>
-						<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
+						<span class="description"><?php
+						    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+						    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
 					}
 				}
 				// Text
@@ -96,7 +106,9 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 					}
 					?>" id="<?php echo esc_attr( isset( $field[ 'field_name' ] ) ? $field[ 'field_name' ] : ''  ); ?>" name="<?php echo esc_attr( $field[ 'field_name' ] . '_' . $field[ 'post_field_type' ] ); ?>" placeholder="<?php echo esc_attr( isset( $field[ 'placeholder' ] ) ? $field[ 'placeholder' ] : ''  ); ?>"  <?php echo isset( $field[ 'required' ] ) ? 'required' : ''; ?> <?php echo esc_attr( isset( $field[ 'number' ] ) ? 'number="true"' : '' ); ?>>
                         <?php if ( isset( $field[ 'field_description' ] ) ) { ?>
-						<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
+						<span class="description"><?php
+						    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+						    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
 					}
 				}
 				// Textare
@@ -111,7 +123,9 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 						}
 						?></textarea>
 					<?php if ( isset( $field[ 'field_description' ] ) ) { ?>
-						<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
+						<span class="description"><?php
+						    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+						    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
 					}
 				}
 				// Editor
@@ -128,7 +142,9 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 					wp_editor( html_entity_decode( stripcslashes( $editor_content ) ), $field[ 'field_name' ], array( 'textarea_name' => $field[ 'field_name' ] . '_' . $field[ 'post_field_type' ], 'textarea_rows' => 5 ) );
 					if ( isset( $field[ 'field_description' ] ) ) {
 						?>
-						<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span>
+						<span class="description"><?php
+						    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+						    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span>
 						<?php
 					}
 				}
@@ -141,9 +157,11 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 								echo esc_attr( isset( $obj->details->{$field[ 'field_name' ] . '_file_url'} ) ? $obj->details->{$field[ 'field_name' ] . '_file_url'} : ''  );
 							}
 							?>" />
-							<input class="file_url_button button-secondary" type="button" value="<?php _e( 'Browse', 'rsc' ); ?>" />
+							<input class="file_url_button button-secondary" type="button" value="<?php esc_attr_e( 'Browse', 'restricted-content' ); ?>" />
 							<?php if ( isset( $field[ 'field_description' ] ) ) { ?>
-								<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span>
+								<span class="description"><?php
+								    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+								    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span>
                             <?php } ?>
 						</label>
 					</div>
@@ -170,6 +188,8 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 			}
 
 			if ( $echo ) {
+
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_sanitize_string().
 				echo rsc_sanitize_string( $conditional_atts ); // Attributes have been escaped.
 
 			} else {
@@ -185,13 +205,17 @@ if ( !class_exists( 'RSC_Fields' ) ) {
          */
 		public static function field_function( $field, $key ) {
 
-		    if ( isset( $field[ 'default_value' ] ) ) {
-				eval( $field[ 'function' ] . '("' . $field[ 'field_name' ] . '", "' . $field[ 'default_value' ] . '");' );
+		    if ( isset( $field[ 'function' ] ) && is_callable( $field[ 'function' ] ) ) {
+				if ( isset( $field[ 'default_value' ] ) ) {
+					call_user_func( $field[ 'function' ], $field[ 'field_name' ], $field[ 'default_value' ] );
 
-			} else {
-				eval( $field[ 'function' ] . '("' . $field[ 'field_name' ] . '");' );
+				} else {
+					call_user_func( $field[ 'function' ], $field[ 'field_name' ] );
+				}
 			} ?>
-			<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
+			<span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? $field[ 'field_description' ] : '' ); ?></span><?php
 		}
 
         /**
@@ -202,8 +226,10 @@ if ( !class_exists( 'RSC_Fields' ) ) {
          */
 		public static function field_text( $field, $key ) {
 			$rsc_settings = get_option( $key, false ); ?>
-			<input type="text" class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" name="<?php echo esc_attr($key); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? stripslashes( esc_attr( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? stripslashes( esc_attr( $field[ 'default_value' ] ) ) : '') ) ?>" <?php echo esc_attr( isset( $field[ 'required' ] ) ? 'required' : '' ); ?> <?php echo esc_attr( isset( $field[ 'number' ] ) ? 'number="true"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'minlength' ] ) ? 'minlength="' . (int) $field[ 'minlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'maxlength' ] ) ? 'maxlength="' . (int) $field[ 'maxlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'rangelength' ] ) ? 'rangelength="' . (int) $field[ 'rangelength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'min' ] ) ? 'min="' . (int) $field[ 'min' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'max' ] ) ? 'max="' . (int) $field[ 'max' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'range' ] ) ? 'range="' . $field[ 'range' ] . '"' : '' ); ?>>
-			<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
+			<input type="text" class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" name="<?php echo esc_attr($key); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? esc_attr( stripslashes( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? esc_attr( stripslashes( $field[ 'default_value' ] ) ) : '') ) ?>" <?php echo esc_attr( isset( $field[ 'required' ] ) ? 'required' : '' ); ?> <?php echo esc_attr( isset( $field[ 'number' ] ) ? 'number="true"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'minlength' ] ) ? 'minlength="' . (int) $field[ 'minlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'maxlength' ] ) ? 'maxlength="' . (int) $field[ 'maxlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'rangelength' ] ) ? 'rangelength="' . (int) $field[ 'rangelength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'min' ] ) ? 'min="' . (int) $field[ 'min' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'max' ] ) ? 'max="' . (int) $field[ 'max' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'range' ] ) ? 'range="' . $field[ 'range' ] . '"' : '' ); ?>>
+			<span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
 			<?php
 		}
 
@@ -216,8 +242,10 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 		public static function color_field( $field, $key ) {
 			$rsc_settings = get_option( $key, false ); ?>
             <input type="hidden" name="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" value="<?php echo esc_attr( $field[ 'default_value' ] ); ?>" class="tc-default-color"/>
-			<input type="text" class="rsc_color_field <?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" name="<?php echo esc_attr($key); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? stripslashes( esc_attr( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? stripslashes( esc_attr( $field[ 'default_value' ] ) ) : '') ) ?>" <?php echo esc_attr( isset( $field[ 'required' ] ) ? 'required' : '' ); ?> <?php echo esc_attr( isset( $field[ 'number' ] ) ? 'number="true"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'minlength' ] ) ? 'minlength="' . (int) $field[ 'minlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'maxlength' ] ) ? 'maxlength="' . (int) $field[ 'maxlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'rangelength' ] ) ? 'rangelength="' . (int) $field[ 'rangelength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'min' ] ) ? 'min="' . (int) $field[ 'min' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'max' ] ) ? 'max="' . (int) $field[ 'max' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'range' ] ) ? 'range="' . $field[ 'range' ] . '"' : '' ); ?>>
-            <span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
+			<input type="text" class="rsc_color_field <?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" name="<?php echo esc_attr($key); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? esc_attr( stripslashes( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? esc_attr( stripslashes( $field[ 'default_value' ] ) ) : '') ) ?>" <?php echo esc_attr( isset( $field[ 'required' ] ) ? 'required' : '' ); ?> <?php echo esc_attr( isset( $field[ 'number' ] ) ? 'number="true"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'minlength' ] ) ? 'minlength="' . (int) $field[ 'minlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'maxlength' ] ) ? 'maxlength="' . (int) $field[ 'maxlength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'rangelength' ] ) ? 'rangelength="' . (int) $field[ 'rangelength' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'min' ] ) ? 'min="' . (int) $field[ 'min' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'max' ] ) ? 'max="' . (int) $field[ 'max' ] . '"' : '' ); ?> <?php echo esc_attr( isset( $field[ 'range' ] ) ? 'range="' . $field[ 'range' ] . '"' : '' ); ?>>
+            <span class="description"><?php
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
 			<?php
 		}
 
@@ -229,9 +257,11 @@ if ( !class_exists( 'RSC_Fields' ) ) {
          */
 		function field_file( $field, $key ) {
 			$rsc_settings = get_option( esc_attr( $key ), false ); ?>
-			<input class="file_url <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" type="text" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? stripslashes( esc_attr( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? stripslashes( esc_attr( $field[ 'default_value' ] ) ) : '') ); ?>" />
-			<input class="file_url_button button-secondary" type="button" value="<?php _e( 'Browse', 'rsc' ); ?>" />
-			<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
+			<input class="file_url <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" type="text" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? esc_attr( stripslashes( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? esc_attr( stripslashes( $field[ 'default_value' ] ) ) : '') ); ?>" />
+			<input class="file_url_button button-secondary" type="button" value="<?php esc_attr_e( 'Browse', 'restricted-content' ); ?>" />
+			<span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span>
 			<?php
 		}
 
@@ -247,15 +277,20 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 
 			$rsc_settings = get_option( esc_attr( $key ), false );
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_style( 'jquery-style', $rsc->plugin_url . 'css/jquery/smoothness/googleapis/jquery-ui.css' ); ?>
+			wp_enqueue_style( 'jquery-style', $rsc->plugin_url . 'css/jquery/smoothness/googleapis/jquery-ui.css', [], $rsc->version ); ?>
 
             <input type="text" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" name="<?php echo esc_attr( $field[ 'field_name' ] ); ?>" value="" />
 			<input type="hidden" name="<?php echo esc_attr( $field[ 'field_name' ] ); ?>_raw" id="<?php echo esc_attr( $field[ 'field_name' ] ); ?>_raw" value="" />
-			<span class="description"><?php echo rsc_esc_html( $field[ 'field_description' ] ); ?></span>
+			<span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( $field[ 'field_description' ] ); ?></span>
 			<script>
 				jQuery( document ).ready( function ( $ ) {
 					jQuery( '#<?php echo esc_attr( $field[ 'field_name' ] ); ?>' ).datepicker( {
-						dateFormat: '<?php echo rsc_sanitize_string( isset( $field[ 'date_format' ] ) ? $field[ 'date_format' ] : 'dd-mm-yy' ); ?>',
+						dateFormat: '<?php
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_sanitize_string().
+                            echo rsc_sanitize_string( isset( $field[ 'date_format' ] ) ? $field[ 'date_format' ] : 'dd-mm-yy' );
+                        ?>',
 						onSelect: function ( dateText, inst ) {
 							jQuery( '#<?php echo esc_attr( $field[ 'field_name' ] ); ?>_raw' ).val( inst.selectedYear + '-' + inv_leading_zeros( inst.selectedMonth ) + '-' + inv_leading_zeros( inst.selectedDay ) );
 						}
@@ -280,8 +315,10 @@ if ( !class_exists( 'RSC_Fields' ) ) {
          */
 		public static function field_textarea( $field, $key ) {
 			$rsc_settings = get_option( esc_attr( $key ), false ); ?>
-			<textarea class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]"><?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? stripslashes( esc_attr( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? stripslashes( esc_attr( $field[ 'default_value' ] ) ) : '') ) ?></textarea>
-			<span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
+			<textarea class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]"><?php echo (isset( $rsc_settings[ $field[ 'field_name' ] ] ) ? esc_attr( stripslashes( $rsc_settings[ $field[ 'field_name' ] ] ) ) : (isset( $field[ 'default_value' ] ) ? esc_attr( stripslashes( $field[ 'default_value' ] ) ) : '') ) ?></textarea>
+			<span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
 		}
 
         /**
@@ -299,7 +336,9 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 				$saved_value = $field[ 'default_value' ];
 			} ?>
 			<?php wp_editor( html_entity_decode( stripcslashes( esc_textarea( $saved_value ) ) ), 'inv_wp_editor_' . $field[ 'field_name' ], array( 'textarea_name' => esc_attr( $key . '[' . $field[ 'field_name' ] . ']' ), 'textarea_rows' => 2 ) ); ?>
-			<br /><span class="description"><?php echo ( isset( $field[ 'field_description' ] ) ? rsc_esc_html( $field[ 'field_description' ] ) : '' ); ?></span><?php
+			<br /><span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo ( isset( $field[ 'field_description' ] ) ? rsc_esc_html( $field[ 'field_description' ] ) : '' ); ?></span><?php
 		}
 
         /**
@@ -316,9 +355,13 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 			}
 
 			foreach ( $field[ 'values' ] as $key => $value ) { ?>
-				<input type="radio" class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo esc_attr( $key ); ?>" <?php checked( $key, $saved_value, true ); ?> /> <?php echo rsc_esc_html( $value ); ?><?php
+				<input type="radio" class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>" name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" value="<?php echo esc_attr( $key ); ?>" <?php checked( $key, $saved_value, true ); ?> /> <?php
+				    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+				    echo rsc_esc_html( $value ); ?><?php
 			} ?>
-			<br /><span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
+			<br /><span class="description"><?php
+			    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+			    echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
 		}
 
         /**
@@ -336,11 +379,15 @@ if ( !class_exists( 'RSC_Fields' ) ) {
 			} ?>
 			<select name="<?php echo esc_attr( $key ); ?>[<?php echo esc_attr( $field[ 'field_name' ] ); ?>]" class="<?php echo esc_attr( $field[ 'field_name' ] ); ?> <?php echo esc_attr( isset( $field[ 'field_class' ] ) ? $field[ 'field_class' ] : ''  ); ?>"><?php
 				foreach ( $field[ 'values' ] as $key => $value ) { ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $saved_value, true ); ?>><?php echo rsc_esc_html( $value ); ?></option><?php
+					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $saved_value, true ); ?>><?php
+					    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+					    echo rsc_esc_html( $value ); ?></option><?php
 				} ?>
 			</select>
 			<br />
-            <span class="description"><?php echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
+            <span class="description"><?php
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                echo rsc_esc_html( isset( $field[ 'field_description' ] ) ? stripslashes( $field[ 'field_description' ] ) : ''  ); ?></span><?php
 		}
 	}
 }

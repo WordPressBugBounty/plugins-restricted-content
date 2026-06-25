@@ -6,11 +6,11 @@ add_filter('rsc_settings_store_fields', 'rsc_add_new_fields_for_comments', 10, 1
 function rsc_add_new_fields_for_comments($fields){
   $fields[] = array(
     'field_name' => 'restrict_comments',
-    'field_title' => __('Restrict Comments', 'rsc'),
+    'field_title' => __('Restrict Comments', 'restricted-content'),
     'field_type' => 'function',
     'function' => 'rsc_yes_no',
     'default_value' => 'no',
-    'tooltip' => __('Select whether the comments of the posts with restricted content should be restricted as well.', 'rsc'),
+    'tooltip' => __('Select whether the comments of the posts with restricted content should be restricted as well.', 'restricted-content'),
     'section' => 'general_comments'
   );
   return $fields;
@@ -21,7 +21,7 @@ add_filter('rc_settings_new_sections', 'rsc_add_new_admin_section_for_comments',
 function rsc_add_new_admin_section_for_comments($sections){
   $sections['general'][] = array(
     'name' => 'general_comments',
-    'title' => __('Comments', 'rsc'),
+    'title' => __('Comments', 'restricted-content'),
     'description' => '',
     'subtitle' => '',
     'header' => '',

@@ -6,9 +6,9 @@
  * Description: Easily restrict access to the content on your website to logged in users, members with a specific role or capability, to it's author, Tickera users, WooCommerce or Easy Digital Downloads members who made any purchases or purchased a specific item.
  * Author: Restrict
  * Author URI: https://restrict.io/
- * Version: 2.3.4
- * Text Domain: rsc
- * Domain Path: languages
+ * Version: 2.3.5
+ * Text Domain: restricted-content
+ * Domain Path: /languages/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Copyright 2020 Tickera (https://tickera.com/)
@@ -33,27 +33,28 @@ if ( !function_exists( 'restrict_fs' ) ) {
             // Include Freemius SDK.
             require_once dirname( __FILE__ ) . '/freemius/start.php';
             $restrict_fs = fs_dynamic_init( array(
-                'id'             => '6013',
-                'slug'           => 'restricted-content',
-                'premium_slug'   => 'restricted-content-pro',
-                'type'           => 'plugin',
-                'public_key'     => 'pk_850e333579e4ba2ac0eb27a9f33a6',
-                'is_premium'     => false,
-                'premium_suffix' => 'PRO',
-                'has_addons'     => false,
-                'has_paid_plans' => true,
-                'trial'          => array(
+                'id'               => '6013',
+                'slug'             => 'restricted-content',
+                'premium_slug'     => 'restricted-content-pro',
+                'type'             => 'plugin',
+                'public_key'       => 'pk_850e333579e4ba2ac0eb27a9f33a6',
+                'is_premium'       => false,
+                'premium_suffix'   => 'PRO',
+                'has_addons'       => false,
+                'has_paid_plans'   => true,
+                'trial'            => array(
                     'days'               => 7,
                     'is_require_payment' => true,
                 ),
-                'menu'           => array(
+                'menu'             => array(
                     'slug'    => 'restricted_content_settings',
                     'contact' => true,
                     'support' => false,
                     'pricing' => true,
                     'account' => true,
                 ),
-                'is_live'        => true,
+                'is_live'          => true,
+                'is_org_compliant' => true,
             ) );
         }
         return $restrict_fs;
@@ -66,7 +67,7 @@ if ( !function_exists( 'restrict_fs' ) ) {
 }
 if ( !class_exists( 'Restricted_Content' ) ) {
     class Restricted_Content {
-        var $version = '2.2.6';
+        var $version = '2.3.4';
 
         var $title = 'Restrict';
 
@@ -129,7 +130,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             require_once $this->plugin_dir . 'includes/freeaddons/woocommerce-shop-page.php';
             require_once $this->plugin_dir . 'includes/freeaddons/siteorigin-integration.php';
             require_once $this->plugin_dir . 'includes/freeaddons/simple-urls.php';
-            add_filter( 'pre_get_posts', array($this, 'restrict_search') );
+            add_action( 'pre_get_posts', array($this, 'restrict_search') );
         }
 
         function set_plugin_dir() {
@@ -155,7 +156,11 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 $this->plugin_dir = WPMU_PLUGIN_DIR;
                 $this->plugin_url = WPMU_PLUGIN_URL;
             } else {
-                wp_die( sprintf( __( 'There was an issue determining where %s is installed. Please reinstall it.', 'rsc' ), $this->title ) );
+                wp_die( esc_html( sprintf( 
+                    /* translators: %s: Restrict */
+                    __( 'There was an issue determining where %s is installed. Please reinstall it.', 'restricted-content' ),
+                    esc_html( $this->title )
+                 ) ) );
             }
             self::$woocommerce_settings['hpos'] = get_option( 'woocommerce_custom_orders_table_enabled' );
         }
@@ -168,7 +173,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          * @return mixed [type]
          */
         function plugin_action_links( $links, $file ) {
-            $settings_link = '<a href="' . esc_url( admin_url( 'admin.php?page=restricted_content_settings' ) ) . '">' . __( 'Settings', 'rsc' ) . '</a>';
+            $settings_link = '<a href="' . esc_url( admin_url( 'admin.php?page=restricted_content_settings' ) ) . '">' . __( 'Settings', 'restricted-content' ) . '</a>';
             array_unshift( $links, $settings_link );
             return $links;
         }
@@ -180,11 +185,14 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          */
         function localization() {
             if ( $this->location == 'mu-plugins' ) {
-                load_muplugin_textdomain( 'rsc', 'languages/' );
+                // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Restrict content use case
+                load_muplugin_textdomain( 'restricted-content', 'languages/' );
             } elseif ( $this->location == 'subfolder-plugins' ) {
-                load_plugin_textdomain( 'rsc', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+                // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Restrict content use case
+                load_plugin_textdomain( 'restricted-content', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
             } elseif ( $this->location == 'plugins' ) {
-                load_plugin_textdomain( 'rsc', false, 'languages/' );
+                // phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Restrict content use case
+                load_plugin_textdomain( 'restricted-content', false, 'languages/' );
             }
             $temp_locales = explode( '_', get_locale() );
             $this->language = ( $temp_locales[0] ? $temp_locales[0] : 'en' );
@@ -194,6 +202,9 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          * @param $query
          */
         function restrict_search( $query ) {
+            if ( !$query instanceof WP_Query ) {
+                return;
+            }
             if ( $query->is_search && !is_admin() && $query->is_main_query() || defined( 'REST_REQUEST' ) && REST_REQUEST && isset( $query->query_vars['s'] ) ) {
                 $meta_query = $query->get( 'meta_query' );
                 $meta_query = ( $meta_query ? $meta_query : [] );
@@ -274,24 +285,24 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             switch ( $type ) {
                 case 'logged_in':
                     // Only logged in users should have access to the content
-                    return apply_filters( 'rsc_logged_in_message', ( isset( $rsc_settings['logged_in_message'] ) ? esc_html( $rsc_settings['logged_in_message'] ) : esc_html( __( 'You must log in to view this content', 'rsc' ) ) ) );
+                    return apply_filters( 'rsc_logged_in_message', ( isset( $rsc_settings['logged_in_message'] ) ? esc_html( $rsc_settings['logged_in_message'] ) : esc_html( __( 'You must log in to view this content', 'restricted-content' ) ) ) );
                     break;
                 case 'role':
-                    return $user_role_message = apply_filters( 'rsc_role_message', ( isset( $rsc_settings['user_role_message'] ) ? esc_html( $rsc_settings['user_role_message'] ) : esc_html( __( 'You don\'t have required permissions to view this content.', 'rsc' ) ) ) );
+                    return $user_role_message = apply_filters( 'rsc_role_message', ( isset( $rsc_settings['user_role_message'] ) ? esc_html( $rsc_settings['user_role_message'] ) : esc_html( __( 'You don\'t have required permissions to view this content.', 'restricted-content' ) ) ) );
                     break;
                 case 'capability':
-                    return apply_filters( 'rsc_capability_message', ( isset( $rsc_settings['capability_message'] ) ? esc_html( $rsc_settings['capability_message'] ) : esc_html( __( 'You don\'t have required permissions to view this content.', 'rsc' ) ) ) );
+                    return apply_filters( 'rsc_capability_message', ( isset( $rsc_settings['capability_message'] ) ? esc_html( $rsc_settings['capability_message'] ) : esc_html( __( 'You don\'t have required permissions to view this content.', 'restricted-content' ) ) ) );
                     break;
                 case 'author':
                     // Only author of the post and the administrator should have access to the content
-                    return apply_filters( 'rsc_author_message', ( isset( $rsc_settings['author_message'] ) ? esc_html( $rsc_settings['author_message'] ) : esc_html( __( 'This content is available only to it\'s author.', 'rsc' ) ) ) );
+                    return apply_filters( 'rsc_author_message', ( isset( $rsc_settings['author_message'] ) ? esc_html( $rsc_settings['author_message'] ) : esc_html( __( 'This content is available only to it\'s author.', 'restricted-content' ) ) ) );
                     break;
                 case 'tickera_anything':
-                    return apply_filters( 'rsc_tickera_any_ticket_type_message', ( isset( $rsc_settings['tickera_any_ticket_type_message'] ) ? esc_html( $rsc_settings['tickera_any_ticket_type_message'] ) : esc_html( __( 'This content is restricted to the attendees only. Please purchase ticket(s) in order to access this content.', 'rsc' ) ) ) );
+                    return apply_filters( 'rsc_tickera_any_ticket_type_message', ( isset( $rsc_settings['tickera_any_ticket_type_message'] ) ? esc_html( $rsc_settings['tickera_any_ticket_type_message'] ) : esc_html( __( 'This content is restricted to the attendees only. Please purchase ticket(s) in order to access this content.', 'restricted-content' ) ) ) );
                     break;
                 case 'tickera_event':
                     $rsc_tickera_users_event = $additional_arg;
-                    $message = apply_filters( 'rsc_tickera_specific_event_message', ( isset( $rsc_settings['tickera_specific_event_message'] ) ? esc_html( $rsc_settings['tickera_specific_event_message'] ) : esc_html( __( 'Only attendees who purchased ticket(s) for following event(s): [rsc_tc_event] can access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_tickera_specific_event_message', ( isset( $rsc_settings['tickera_specific_event_message'] ) ? esc_html( $rsc_settings['tickera_specific_event_message'] ) : esc_html( __( 'Only attendees who purchased ticket(s) for following event(s): [rsc_tc_event] can access this content.', 'restricted-content' ) ) ) );
                     // Show event titles only if [rsc_tc_event] is used
                     if ( preg_match( '/[rsc_tc_event]/', $message ) ) {
                         $events_titles = array();
@@ -312,7 +323,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     break;
                 case 'tickera_ticket_type':
                     $rsc_tickera_users_ticket_type = $additional_arg;
-                    $message = apply_filters( 'rsc_tickera_specific_ticket_type_message', ( isset( $rsc_settings['tickera_specific_ticket_type_message'] ) ? esc_html( $rsc_settings['tickera_specific_ticket_type_message'] ) : esc_html( __( 'Only attendees who purchased following ticket type(s): [rsc_tc_ticket_type] can access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_tickera_specific_ticket_type_message', ( isset( $rsc_settings['tickera_specific_ticket_type_message'] ) ? esc_html( $rsc_settings['tickera_specific_ticket_type_message'] ) : esc_html( __( 'Only attendees who purchased following ticket type(s): [rsc_tc_ticket_type] can access this content.', 'restricted-content' ) ) ) );
                     // Show event titles only if [rsc_tc_event] is used
                     if ( preg_match( '/[rsc_tc_ticket_type]/', $message ) ) {
                         $ticket_types_titles = array();
@@ -334,7 +345,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                                 }
                                 $event_title = apply_filters(
                                     'rsc_event_title_ticket_types_placeholder',
-                                    ' (' . get_the_title( $event_id ) . ' ' . __( 'event', 'rsc' ) . ')',
+                                    ' (' . get_the_title( $event_id ) . ' ' . __( 'event', 'restricted-content' ) . ')',
                                     $event_id,
                                     $rsc_tickera_users_ticket_type_value
                                 );
@@ -348,12 +359,12 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     return $message;
                     break;
                 case 'woo_anything':
-                    $message = apply_filters( 'rsc_woo_any_product_message', ( isset( $rsc_settings['woo_any_product_message'] ) ? esc_html( $rsc_settings['woo_any_product_message'] ) : esc_html( __( 'This content is restricted to the clients only. Please purchase any product in order to access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_woo_any_product_message', ( isset( $rsc_settings['woo_any_product_message'] ) ? esc_html( $rsc_settings['woo_any_product_message'] ) : esc_html( __( 'This content is restricted to the clients only. Please purchase any product in order to access this content.', 'restricted-content' ) ) ) );
                     return $message;
                     break;
                 case 'woo_product':
                     $rsc_woo_users_product = $additional_arg;
-                    $message = apply_filters( 'rsc_woo_specific_product_message', ( isset( $rsc_settings['woo_specific_product_message'] ) ? esc_html( $rsc_settings['woo_specific_product_message'] ) : esc_html( __( 'Only clients who purchased following product(s): [rsc_woo_product] can access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_woo_specific_product_message', ( isset( $rsc_settings['woo_specific_product_message'] ) ? esc_html( $rsc_settings['woo_specific_product_message'] ) : esc_html( __( 'Only clients who purchased following product(s): [rsc_woo_product] can access this content.', 'restricted-content' ) ) ) );
                     // Show product titles only if [rsc_woo_product] is used
                     if ( preg_match( '/[rsc_woo_product]/', $message ) ) {
                         $product_titles = array();
@@ -374,7 +385,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     break;
                 case 'woo_product_limited':
                     $rsc_woo_users_product = $additional_arg;
-                    $message = apply_filters( 'rsc_woo_specific_product_limited_message', ( isset( $rsc_settings['woo_specific_product_limited_message'] ) ? esc_html( $rsc_settings['woo_specific_product_limited_message'] ) : esc_html( __( 'The access to this content is invalid or has expired. Please (re)purchase one of the following product(s): [rsc_woo_product_links] in order to get access to this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_woo_specific_product_limited_message', ( isset( $rsc_settings['woo_specific_product_limited_message'] ) ? esc_html( $rsc_settings['woo_specific_product_limited_message'] ) : esc_html( __( 'The access to this content is invalid or has expired. Please (re)purchase one of the following product(s): [rsc_woo_product_links] in order to get access to this content.', 'restricted-content' ) ) ) );
                     // Show product titles only if [rsc_woo_product] is used
                     if ( preg_match( '/[rsc_woo_product]/', $message ) ) {
                         $product_titles = array();
@@ -394,12 +405,12 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     return $message;
                     break;
                 case 'edd_anything':
-                    $message = apply_filters( 'rsc_edd_any_product_message', ( isset( $rsc_settings['edd_any_product_message'] ) ? esc_html( $rsc_settings['edd_any_product_message'] ) : esc_html( __( 'This content is restricted to the clients only. Please purchase any product in order to access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_edd_any_product_message', ( isset( $rsc_settings['edd_any_product_message'] ) ? esc_html( $rsc_settings['edd_any_product_message'] ) : esc_html( __( 'This content is restricted to the clients only. Please purchase any product in order to access this content.', 'restricted-content' ) ) ) );
                     return $message;
                     break;
                 case 'edd_product':
                     $rsc_edd_users_product = $additional_arg;
-                    $message = apply_filters( 'rsc_edd_specific_product_message', ( isset( $rsc_settings['edd_specific_product_message'] ) ? esc_html( $rsc_settings['edd_specific_product_message'] ) : esc_html( __( 'Only clients who purchased following product(s): [rsc_edd_product] can access this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_edd_specific_product_message', ( isset( $rsc_settings['edd_specific_product_message'] ) ? esc_html( $rsc_settings['edd_specific_product_message'] ) : esc_html( __( 'Only clients who purchased following product(s): [rsc_edd_product] can access this content.', 'restricted-content' ) ) ) );
                     // Show product titles only if [rsc_edd_product] is used
                     if ( preg_match( '/[rsc_edd_product]/', $message ) ) {
                         $product_titles = array();
@@ -420,7 +431,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     break;
                 case 'edd_product_limited':
                     $rsc_edd_users_product = $additional_arg;
-                    $message = apply_filters( 'rsc_edd_specific_product_limited_message', ( isset( $rsc_settings['edd_specific_product_limited_message'] ) ? esc_html( $rsc_settings['edd_specific_product_limited_message'] ) : esc_html( __( 'The access to this content is invalid or has expired. Please (re)purchase one of the following product(s): [rsc_edd_product_links] in order to get access to this content.', 'rsc' ) ) ) );
+                    $message = apply_filters( 'rsc_edd_specific_product_limited_message', ( isset( $rsc_settings['edd_specific_product_limited_message'] ) ? esc_html( $rsc_settings['edd_specific_product_limited_message'] ) : esc_html( __( 'The access to this content is invalid or has expired. Please (re)purchase one of the following product(s): [rsc_edd_product_links] in order to get access to this content.', 'restricted-content' ) ) ) );
                     // Show product titles only if [rsc_edd_product] is used
                     if ( preg_match( '/[rsc_edd_product]/', $message ) ) {
                         $product_titles = array();
@@ -638,7 +649,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 // Redirect to specified url
                 $redirect_url = apply_filters( 'rsc_redirect_blocked_content', false, $type );
                 if ( $redirect_url ) {
-                    wp_redirect( $redirect_url );
+                    wp_safe_redirect( $redirect_url );
                     exit;
                 }
             }
@@ -673,9 +684,11 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             if ( $rsc_skip_check ) {
                 return true;
             }
-            if ( isset( $value_array['id'] ) && (!isset( $value_array['is_category'] ) || isset( $value_array['is_category'] ) && $value_array['is_category'] == false) ) {
+            if ( isset( $value_array['id'] ) && !isset( $value_array['_rsc_content_availability'] ) && (!isset( $value_array['is_category'] ) || isset( $value_array['is_category'] ) && $value_array['is_category'] == false) ) {
                 $id = $value_array['id'];
                 $value_array = apply_filters( 'rsc_get_post_value_array', get_post_meta( $id ), $id );
+                $value_array['id'] = $id;
+                $value_array['is_category'] = false;
             }
             $type = ( isset( $value_array['_rsc_content_availability'] ) ? Restricted_Content::fix_value( $value_array['_rsc_content_availability'] ) : 'everyone' );
             $rsc_settings = get_option( 'rsc_settings' );
@@ -897,23 +910,21 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             wp_enqueue_script(
                 $this->name . '-chosen',
                 $this->plugin_url . 'js/chosen.jquery.min.js',
-                array($this->name . '-admin'),
-                false,
+                array('jquery'),
+                $this->version,
                 false
             );
-            if ( isset( $_GET['page'] ) && $_GET['page'] == 'restricted_content_settings' ) {
+            $screen = ( function_exists( 'get_current_screen' ) ? get_current_screen() : false );
+            if ( $screen && 'toplevel_page_restricted_content_settings' === $screen->id ) {
                 wp_enqueue_script(
                     'rsc-sticky',
                     $this->plugin_url . 'js/jquery.sticky.js',
                     array('jquery'),
-                    $this->version
+                    $this->version,
+                    true
                 );
                 wp_localize_script( $this->name . '-admin', 'rsc_vars', array(
-                    'tc_check_page' => sprintf( 
-                        /* translators: %s: Current page. */
-                        __( '%s', 'rsc' ),
-                        sanitize_text_field( $_GET['page'] )
-                     ),
+                    'tc_check_page' => 'restricted_content_settings',
                 ) );
             }
         }
@@ -924,7 +935,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         function rc_add_admin_menu() {
             global $first_rsc_menu_handler;
             $plugin_admin_menu_items = array(
-                'settings' => __( 'Settings', 'rsc' ),
+                'settings' => __( 'Settings', 'restricted-content' ),
             );
             add_menu_page(
                 $this->title,
@@ -961,17 +972,24 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         }
 
         public static function get_product_purchased_last_date( $user_id, $product_id ) {
-            global $wpdb;
-            if ( isset( self::$woocommerce_settings['hpos'] ) && 'no' == self::$woocommerce_settings['hpos'] ) {
-                $query = $wpdb->prepare( "SELECT p.post_date FROM {$wpdb->prefix}posts p\r\n                    INNER JOIN {$wpdb->prefix}postmeta pm ON p.ID = pm.post_id\r\n                    INNER JOIN {$wpdb->prefix}woocommerce_order_items oi ON oi.order_id = p.ID\r\n                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta oim ON oi.order_item_id = oim.order_item_id\r\n                    WHERE p.post_type='shop_order' AND p.post_status IN ('wc-completed', 'wc-processing')\r\n                    AND ( pm.meta_key = '_customer_user' AND pm.meta_value = '%d' )\r\n                    AND oim.meta_key IN ('_product_id','_variation_id') AND oim.meta_value = '%d'\r\n                    ORDER BY p.ID DESC LIMIT 1", (int) $user_id, (int) $product_id );
-                return $wpdb->get_var( $query );
-            } else {
-                // Guest user
-                if ( !$user_id ) {
-                    return;
+            // Guest user
+            if ( !$user_id || !function_exists( 'wc_get_orders' ) ) {
+                return;
+            }
+            $orders = wc_get_orders( array(
+                'customer_id' => (int) $user_id,
+                'status'      => array('completed', 'processing'),
+                'limit'       => -1,
+                'orderby'     => 'date',
+                'order'       => 'DESC',
+            ) );
+            foreach ( $orders as $order ) {
+                foreach ( $order->get_items() as $item ) {
+                    if ( (int) $item->get_product_id() === (int) $product_id || (int) $item->get_variation_id() === (int) $product_id ) {
+                        $date_created = $order->get_date_created();
+                        return ( $date_created ? $date_created->date( 'Y-m-d H:i:s' ) : null );
+                    }
                 }
-                $query = $wpdb->prepare( "SELECT wo.id FROM wp_wc_orders wo\r\n                    INNER JOIN {$wpdb->prefix}wc_orders_meta wom ON wo.id = wom.order_id\r\n                    INNER JOIN {$wpdb->prefix}woocommerce_order_items oi ON oi.order_id = wo.id\r\n                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta oim ON oi.order_item_id = oim.order_item_id\r\n                    WHERE wo.status IN ('wc-completed', 'wc-processing' )\r\n                    AND wo.customer_id = '%d'\r\n                    AND oim.meta_key IN ('_product_id','_variation_id') AND oim.meta_value = '%d'\r\n                    ORDER BY wo.id DESC LIMIT 1", (int) $user_id, (int) $product_id );
-                return $wpdb->get_var( $query );
             }
         }
 
@@ -1110,11 +1128,40 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 // Overall paid orders
                 if ( apply_filters( 'tc_is_woo', false ) == true ) {
                     // Tickera is in the Bridge mode
-                    $query = $wpdb->prepare( "SELECT COUNT(p.ID) FROM {$wpdb->posts} p, {$wpdb->postmeta} pm1, {$wpdb->postmeta} pm2\r\n                        WHERE p.ID=pm1.post_id AND p.ID=pm2.post_id\r\n                        AND (p.post_status='wc-completed' OR p.post_status='wc-processing')\r\n                        AND p.post_type='shop_order'\r\n                        AND pm1.meta_key='_customer_user'\r\n                        AND pm1.meta_value=%d\r\n                        AND pm2.meta_key='tc_cart_info' )", (int) $user_id );
-                    $paid_orders_count = $wpdb->get_var( $query );
+                    $get_orders_count = new WP_Query(array(
+                        'fields'                 => 'ids',
+                        'posts_per_page'         => 1,
+                        'no_found_rows'          => false,
+                        'update_post_meta_cache' => false,
+                        'update_post_term_cache' => false,
+                        'post_type'              => 'shop_order',
+                        'post_status'            => array('wc-completed', 'wc-processing'),
+                        'meta_query'             => array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => '_customer_user',
+                                'value'   => (int) $user_id,
+                                'compare' => '=',
+                            ),
+                            array(
+                                'key'     => 'tc_cart_info',
+                                'compare' => 'EXISTS',
+                            ),
+                        ),
+                    ));
+                    $paid_orders_count = (int) $get_orders_count->found_posts;
                 } else {
-                    $query = $wpdb->prepare( "SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_author = %d AND post_status = 'order_paid' AND post_type = 'tc_orders'", (int) $user_id );
-                    $paid_orders_count = $wpdb->get_var( $query );
+                    $get_orders_count = new WP_Query(array(
+                        'fields'                 => 'ids',
+                        'posts_per_page'         => 1,
+                        'no_found_rows'          => false,
+                        'update_post_meta_cache' => false,
+                        'update_post_term_cache' => false,
+                        'author'                 => (int) $user_id,
+                        'post_type'              => 'tc_orders',
+                        'post_status'            => 'order_paid',
+                    ));
+                    $paid_orders_count = (int) $get_orders_count->found_posts;
                 }
                 return $paid_orders_count;
             }
@@ -1123,65 +1170,112 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                  * Paid orders for specific ticket type.
                  * Ticket type id is actually a list of ids / array (so we need to build a bit complicated query).
                  */
-                $ticket_type_id_query_part = '';
+                $ticket_type_meta_query = array();
                 if ( is_array( $ticket_type_id ) ) {
                     if ( count( $ticket_type_id ) > 1 ) {
-                        $ticket_type_ids_count = count( $ticket_type_id );
-                        $ticket_type_id_query_part .= ' AND (';
-                        $foreach_count = 1;
+                        $ticket_type_meta_query['relation'] = 'OR';
                         foreach ( $ticket_type_id as $ticket_type_id_key => $ticket_type_id_value ) {
-                            $extension = ( $ticket_type_ids_count == $foreach_count ? '' : ' OR' );
-                            $ticket_type_id_query_part .= " pm.meta_value LIKE '%i:" . (int) $ticket_type_id_value . ";%' {$extension}";
-                            $foreach_count++;
+                            $ticket_type_meta_query[] = array(
+                                'key'     => 'tc_cart_contents',
+                                'value'   => 'i:' . (int) $ticket_type_id_value . ';',
+                                'compare' => 'LIKE',
+                            );
                         }
-                        $ticket_type_id_query_part .= ') ';
                     } else {
                         // Array contains only one element / ticket type id
-                        $ticket_type_id_query_part = " AND pm.meta_value LIKE '%i:" . (int) $ticket_type_id[0] . ";%'";
+                        $ticket_type_meta_query[] = array(
+                            'key'     => 'tc_cart_contents',
+                            'value'   => 'i:' . (int) $ticket_type_id[0] . ';',
+                            'compare' => 'LIKE',
+                        );
                     }
                 } else {
                     // Argument is an integer (only one ticket type id)
-                    $ticket_type_id_query_part = " AND pm.meta_value LIKE '%i:" . (int) $ticket_type_id . ";%'";
+                    $ticket_type_meta_query[] = array(
+                        'key'     => 'tc_cart_contents',
+                        'value'   => 'i:' . (int) $ticket_type_id . ';',
+                        'compare' => 'LIKE',
+                    );
                 }
                 if ( apply_filters( 'tc_is_woo', false ) == false ) {
-                    $query = $wpdb->prepare( "\r\n                        SELECT COUNT(p.ID) FROM {$wpdb->posts} p, {$wpdb->postmeta} pm\r\n                        WHERE p.ID=pm.post_id\r\n                        AND p.post_author=%d\r\n                        AND p.post_status='order_paid'\r\n                        AND p.post_type='tc_orders'\r\n                        AND pm.meta_key='tc_cart_contents'%1s", (int) $user_id, $ticket_type_id_query_part );
-                    $paid_orders_count = $wpdb->get_var( stripslashes( $query ) );
-                    return $paid_orders_count;
+                    $get_orders_count = new WP_Query(array(
+                        'fields'                 => 'ids',
+                        'posts_per_page'         => 1,
+                        'no_found_rows'          => false,
+                        'update_post_meta_cache' => false,
+                        'update_post_term_cache' => false,
+                        'author'                 => (int) $user_id,
+                        'post_type'              => 'tc_orders',
+                        'post_status'            => 'order_paid',
+                        'meta_query'             => $ticket_type_meta_query,
+                    ));
+                    return (int) $get_orders_count->found_posts;
                 } else {
                     // Query for the Bridge for WooCommerce
-                    $query = $wpdb->prepare( "\r\n                        SELECT COUNT(p.ID) FROM {$wpdb->posts} p, {$wpdb->postmeta} pm, {$wpdb->postmeta} pm2\r\n                        WHERE p.ID=pm.post_id\r\n                        AND p.ID=pm2.post_id\r\n                        AND pm2.meta_key='_customer_user'\r\n                        AND pm2.meta_value=%d\r\n                        AND (p.post_status='wc-completed' OR p.post_status='wc-processing')\r\n                        AND p.post_type='shop_order'\r\n                        AND pm.meta_key='tc_cart_contents'%1s", (int) $user_id, $ticket_type_id_query_part );
-                    $paid_orders_count = $wpdb->get_var( stripslashes( $query ) );
-                    return $paid_orders_count;
+                    $get_orders_count = new WP_Query(array(
+                        'fields'                 => 'ids',
+                        'posts_per_page'         => 1,
+                        'no_found_rows'          => false,
+                        'update_post_meta_cache' => false,
+                        'update_post_term_cache' => false,
+                        'post_type'              => 'shop_order',
+                        'post_status'            => array('wc-completed', 'wc-processing'),
+                        'meta_query'             => array_merge( array(
+                            'relation' => 'AND',
+                            array(
+                                'key'     => '_customer_user',
+                                'value'   => (int) $user_id,
+                                'compare' => '=',
+                            ),
+                        ), array($ticket_type_meta_query) ),
+                    ));
+                    return (int) $get_orders_count->found_posts;
                 }
             }
             if ( apply_filters( 'tc_is_woo', false ) == false ) {
                 // This check doesn't work with the Bridge for WooCommerce because it would be very expensive task for the database server
                 if ( $event_id && !$ticket_type_id ) {
                     // Paid orders for specific event
-                    $event_id_query_part = '';
+                    $event_meta_query = array();
                     if ( is_array( $event_id ) ) {
                         // Event id is actually a list of ids / array (so we need to build a bit complicated query)
                         if ( count( $event_id ) > 1 ) {
-                            $event_ids_count = count( $event_id );
-                            $event_id_query_part .= ' AND (';
-                            $foreach_count = 1;
-                            $extension = '';
+                            $event_meta_query['relation'] = 'OR';
                             foreach ( $event_id as $event_id_key => $event_id_value ) {
-                                $extension = ( $event_ids_count == $foreach_count ? '' : ' OR ' );
-                                $event_id_query_part .= " pm.meta_value  LIKE '%" . (int) $event_id_value . "%' {$extension}";
-                                $foreach_count++;
+                                $event_meta_query[] = array(
+                                    'key'     => 'tc_parent_event',
+                                    'value'   => (int) $event_id_value,
+                                    'compare' => 'LIKE',
+                                );
                             }
-                            $event_id_query_part .= ') ';
                         } else {
                             // Array contains only one element / event id
-                            $event_id_query_part = " AND pm.meta_value LIKE '%" . (int) $event_id[0] . "%'";
+                            $event_meta_query[] = array(
+                                'key'     => 'tc_parent_event',
+                                'value'   => (int) $event_id[0],
+                                'compare' => 'LIKE',
+                            );
                         }
                     } else {
                         // Argument is an integer (only one event id)
-                        $event_id_query_part = " AND pm.meta_value LIKE '%" . (int) $event_id . "%'";
+                        $event_meta_query[] = array(
+                            'key'     => 'tc_parent_event',
+                            'value'   => (int) $event_id,
+                            'compare' => 'LIKE',
+                        );
                     }
-                    $query = $wpdb->prepare( "SELECT COUNT(p.ID) FROM {$wpdb->posts} p, {$wpdb->postmeta} pm\r\n                        WHERE p.ID=pm.post_id\r\n                        AND p.post_author=%d\r\n                        AND p.post_status='order_paid'\r\n                        AND p.post_type='tc_orders'\r\n                        AND pm.meta_key='tc_parent_event'%1s", (int) $user_id, $event_id_query_part );
-                    $paid_orders_count = $wpdb->get_var( $query );
+                    $get_orders_count = new WP_Query(array(
+                        'fields'                 => 'ids',
+                        'posts_per_page'         => 1,
+                        'no_found_rows'          => false,
+                        'update_post_meta_cache' => false,
+                        'update_post_term_cache' => false,
+                        'author'                 => (int) $user_id,
+                        'post_type'              => 'tc_orders',
+                        'post_status'            => 'order_paid',
+                        'meta_query'             => $event_meta_query,
+                    ));
+                    $paid_orders_count = (int) $get_orders_count->found_posts;
                 }
             } else {
                 $paid_orders_count = 0;
@@ -1214,7 +1308,8 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         function admin_header() {
             global $wp_version, $post_type;
             // Fix for Tickera builder editor button (because it can't work with multiple WP Editors)
-            if ( isset( $_GET['page'] ) && $_GET['page'] == 'restricted_content_settings' ) {
+            $screen = ( function_exists( 'get_current_screen' ) ? get_current_screen() : false );
+            if ( $screen && 'toplevel_page_restricted_content_settings' === $screen->id ) {
                 echo '<style>.tc-shortcode-builder-button{ display: none !important; }</style>';
             }
             wp_enqueue_style(
@@ -1236,24 +1331,39 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 $this->version
             );
             wp_enqueue_script(
+                $this->name . '-chosen',
+                $this->plugin_url . 'js/chosen.jquery.min.js',
+                array('jquery'),
+                $this->version,
+                false
+            );
+            wp_enqueue_script(
                 $this->name . '-admin',
                 $this->plugin_url . 'js/admin.js',
-                array('jquery', 'jquery-ui-tooltip', 'jquery-ui-core'),
+                array(
+                    'jquery',
+                    'jquery-ui-tooltip',
+                    'jquery-ui-core',
+                    $this->name . '-chosen'
+                ),
                 $this->version,
                 false
             );
             wp_localize_script( $this->name . '-admin', 'rsc_vars', array(
                 'ajaxUrl' => apply_filters( 'rsc_ajaxurl', admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ) ),
             ) );
-            wp_enqueue_script(
-                $this->name . '-chosen',
-                $this->plugin_url . 'js/chosen.jquery.min.js',
-                array($this->name . '-admin'),
-                false,
-                false
+            wp_enqueue_style(
+                'rsc-roboto',
+                'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
+                [],
+                $this->version
             );
-            wp_enqueue_style( 'rsc-roboto', 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap' );
-            wp_register_style( 'restrict_dashicons', $this->plugin_url . '/css/restrict.css' );
+            wp_register_style(
+                'restrict_dashicons',
+                $this->plugin_url . '/css/restrict.css',
+                [],
+                $this->version
+            );
             wp_enqueue_style( 'restrict_dashicons' );
         }
 
@@ -1265,6 +1375,15 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          */
         function save_metabox_values( $post_id ) {
             $metas = [];
+            if ( !isset( $_POST['rsc_metabox_nonce'] ) || !wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rsc_metabox_nonce'] ) ), 'rsc_save_metabox' ) ) {
+                return;
+            }
+            if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+                return;
+            }
+            if ( !current_user_can( 'edit_post', $post_id ) ) {
+                return;
+            }
             $post_data = rsc_sanitize_array2( $_POST, true );
             $post_data = ( $post_data ? $post_data : [] );
             foreach ( $post_data as $field_name => $field_value ) {
@@ -1285,7 +1404,8 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          */
         function add_metabox( $screen_id, $data ) {
             global $post_type;
-            $is_comment = ( isset( $_GET['action'] ) && $_GET['action'] == 'editcomment' ? true : false );
+            $screen = ( function_exists( 'get_current_screen' ) ? get_current_screen() : false );
+            $is_comment = $screen && 'comment' === $screen->base;
             $rsc_skip_post_types = rsc_skip_post_types();
             //do not show restricted content meta fields for post types in the array
             if ( !in_array( $post_type, $rsc_skip_post_types ) && !$is_comment ) {
@@ -1295,7 +1415,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     if ( isset( $rsc_settings['post_type_' . $post_type . '_restricted'] ) && $rsc_settings['post_type_' . $post_type . '_restricted'] == 'yes' ) {
                         add_meta_box(
                             'rsc_metabox',
-                            __( 'Content Restrictions', 'rsc' ),
+                            __( 'Content Restrictions', 'restricted-content' ),
                             array($this, 'show_global_message_metabox'),
                             null,
                             'normal',
@@ -1304,7 +1424,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     } else {
                         add_meta_box(
                             'rsc_metabox',
-                            __( 'Content Available To', 'rsc' ),
+                            __( 'Content Available To', 'restricted-content' ),
                             'Restricted_Content::show_metabox',
                             null,
                             'normal',
@@ -1321,7 +1441,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 } else {
                     add_meta_box(
                         'rsc_metabox',
-                        __( 'Content Available To', 'rsc' ),
+                        __( 'Content Available To', 'restricted-content' ),
                         'Restricted_Content::show_metabox',
                         null,
                         'normal',
@@ -1386,6 +1506,9 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     return get_post_meta( $id, $key, $single );
                 }
             }
+            if ( $metabox_type == 'menu_item' ) {
+                return get_post_meta( $id, $key, $single );
+            }
             if ( $metabox_type == 'post_type' ) {
                 $rsc_settings = get_option( 'rsc_settings', false );
                 return ( isset( $rsc_settings[$metabox_type][$widget_instance][$key . '_rsc_post_meta'] ) ? $rsc_settings[$metabox_type][$widget_instance][$key . '_rsc_post_meta'] : '' );
@@ -1393,7 +1516,8 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             if ( !is_string( $metabox_type ) ) {
                 $metabox_type = 'post';
             }
-            if ( isset( $_GET['tag_ID'] ) ) {
+            $tag_id = filter_input( INPUT_GET, 'tag_ID', FILTER_VALIDATE_INT );
+            if ( null !== $tag_id && false !== $tag_id ) {
                 $metabox_type = 'taxonomy';
             }
             if ( $metabox_type == 'post' ) {
@@ -1412,21 +1536,21 @@ if ( !class_exists( 'Restricted_Content' ) ) {
          */
         public static function get_restriction_options( $metabox_type, $widget = false, $widget_instance = false ) {
             $restriction_options = array(
-                'everyone'   => array(__( 'Everyone', 'rsc' ), false),
-                'logged_in'  => array(__( 'Logged in users', 'rsc' ), false),
-                'role'       => array(__( 'Users with specific role', 'rsc' ), array('Restricted_Content::get_sub_metabox', array(
+                'everyone'   => array(__( 'Everyone', 'restricted-content' ), false),
+                'logged_in'  => array(__( 'Logged in users', 'restricted-content' ), false),
+                'role'       => array(__( 'Users with specific role', 'restricted-content' ), array('Restricted_Content::get_sub_metabox', array(
                     'role',
                     $metabox_type,
                     $widget,
                     $widget_instance
                 ))),
-                'capability' => array(__( 'Users with specific capability', 'rsc' ), array('Restricted_Content::get_sub_metabox', array(
+                'capability' => array(__( 'Users with specific capability', 'restricted-content' ), array('Restricted_Content::get_sub_metabox', array(
                     'capability',
                     $metabox_type,
                     $widget,
                     $widget_instance
                 ))),
-                'author'     => array(__( 'Author', 'rsc' ), array('Restricted_Content::get_sub_metabox', array(
+                'author'     => array(__( 'Author', 'restricted-content' ), array('Restricted_Content::get_sub_metabox', array(
                     'author',
                     $metabox_type,
                     $widget,
@@ -1434,7 +1558,9 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 ))),
             );
             global $pagenow;
-            if ( $metabox_type == 'post' || isset( $_GET['post'] ) || isset( $_GET['post_type'] ) || isset( $pagenow ) && $pagenow == 'post-new.php' || isset( $_GET['tab'] ) && $_GET['tab'] == 'post_types' ) {
+            $screen = ( function_exists( 'get_current_screen' ) ? get_current_screen() : false );
+            $request_tab = sanitize_key( (string) filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW ) );
+            if ( $metabox_type == 'post' || $screen && in_array( $screen->base, array('post', 'post-new'), true ) || isset( $pagenow ) && $pagenow == 'post-new.php' || 'post_types' === $request_tab ) {
                 // It's post / page / custom post type so we'll keep Author
             } else {
                 unset($restriction_options['author']);
@@ -1443,7 +1569,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 global $tc;
                 $restriction_options['tickera'] = array(sprintf( 
                     /* translators: %s: Tickera name. */
-                    __( '%s Users', 'rsc' ),
+                    __( '%s Users', 'restricted-content' ),
                     $tc->title
                  ), array('Restricted_Content::get_sub_metabox', array(
                     'tickera',
@@ -1453,7 +1579,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 )));
             }
             if ( class_exists( 'WooCommerce' ) ) {
-                $restriction_options['woo'] = array(__( 'WooCommerce Users', 'rsc' ), array('Restricted_Content::get_sub_metabox', array(
+                $restriction_options['woo'] = array(__( 'WooCommerce Users', 'restricted-content' ), array('Restricted_Content::get_sub_metabox', array(
                     'woo',
                     $metabox_type,
                     $widget,
@@ -1461,7 +1587,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                 )));
             }
             if ( class_exists( 'Easy_Digital_Downloads' ) ) {
-                $restriction_options['edd'] = array(__( 'Easy Digital Downloads Users', 'rsc' ), array('Restricted_Content::get_sub_metabox', array(
+                $restriction_options['edd'] = array(__( 'Easy Digital Downloads Users', 'restricted-content' ), array('Restricted_Content::get_sub_metabox', array(
                     'edd',
                     $metabox_type,
                     $widget,
@@ -1477,9 +1603,10 @@ if ( !class_exists( 'Restricted_Content' ) ) {
         }
 
         function show_global_message_metabox( $post, $metabox_type = 'post' ) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
             echo rsc_esc_html( sprintf( 
                 /* translators: %s: Restrict content setting page url. */
-                __( 'The content is restricted by the global rules set <a target="_blank" href="%s">here</a>', 'rsc' ),
+                __( 'The content is restricted by the global rules set <a target="_blank" href="%s">here</a>', 'restricted-content' ),
                 esc_url( admin_url( 'admin.php?page=restricted_content_settings&tab=post_types' ) )
              ) );
         }
@@ -1501,16 +1628,25 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     $id = $post->ID;
                 }
                 $data['args']['metabox_type'] = 'post';
+            } elseif ( 'menu_item' === $data['args']['metabox_type'] ) {
+                $id = (int) $data['args']['widget_instance'];
+                $is_menu_item = true;
             } else {
-                $id = ( isset( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : false );
+                $id = filter_input( INPUT_GET, 'tag_ID', FILTER_VALIDATE_INT );
+                $id = ( null !== $id && false !== $id ? (int) $id : false );
             }
-            if ( $id === false ) {
+            if ( 'widget' === $data['args']['metabox_type'] ) {
+                $id = false;
+            } elseif ( $id === false ) {
                 // For menu item
                 $id = (int) $data['args']['widget_instance'];
                 $is_menu_item = true;
             }
+            if ( 'post' === $data['args']['metabox_type'] && !$is_menu_item ) {
+                wp_nonce_field( 'rsc_save_metabox', 'rsc_metabox_nonce' );
+            }
             $rsc_content_availability = '';
-            if ( isset( $post ) || $is_menu_item ) {
+            if ( isset( $post ) || $is_menu_item || 'widget' === $data['args']['metabox_type'] ) {
                 $rsc_content_availability = Restricted_Content::get_meta_value(
                     $id,
                     '_rsc_content_availability',
@@ -1523,16 +1659,31 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     $rsc_content_availability = 'everyone';
                 }
             }
-            $restriction_options_select = '<select name="' . Restricted_Content::get_field_name( '_rsc_content_availability_rsc_post_meta', $data['args']['widget'], $data['args']['widget_instance'] ) . '" class="rsc_content_availability">';
+            $field_name = Restricted_Content::get_field_name( '_rsc_content_availability_rsc_post_meta', $data['args']['widget'], $data['args']['widget_instance'] );
+            ?>
+            <select name="<?php 
+            echo esc_attr( $field_name );
+            ?>" class="rsc_content_availability">
+            <?php 
             foreach ( $restriction_options as $restriction_option_key => $restriction_option_values ) {
-                $selected = ( $rsc_content_availability == $restriction_option_key ? 'selected' : '' );
-                $restriction_options_select .= '<option value="' . esc_attr( $restriction_option_key ) . '" ' . $selected . '>' . $restriction_option_values[0] . '</option>';
+                ?>
+                <option value="<?php 
+                echo esc_attr( $restriction_option_key );
+                ?>" <?php 
+                selected( $rsc_content_availability, $restriction_option_key );
+                ?>>
+                    <?php 
+                echo esc_html( $restriction_option_values[0] );
+                ?>
+                </option>
+                <?php 
                 if ( is_array( $restriction_option_values[1] ) && $restriction_option_values[1][0] ) {
                     $sub_metaboxes_functions[] = array($restriction_option_values[1][0], $restriction_option_values[1][1]);
                 }
             }
-            $restriction_options_select .= '</select>';
-            echo rsc_esc_html( $restriction_options_select );
+            ?>
+            </select>
+            <?php 
             foreach ( $sub_metaboxes_functions as $sub_metaboxes_function_key => $sub_metaboxes_function_args ) {
                 Restricted_Content::execute_function( $sub_metaboxes_function_args[0], $sub_metaboxes_function_args[1] );
             }
@@ -1561,16 +1712,26 @@ if ( !class_exists( 'Restricted_Content' ) ) {
             global $post;
             $return = false;
             if ( is_array( $metabox_type ) || is_string( $metabox_type ) && $metabox_type == 'post' ) {
-                $metabox_type == 'post';
-                if ( current_user_can( 'manage_options' ) && isset( $_GET['page'] ) && $_GET['page'] == 'wc-orders' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' && isset( $_GET['id'] ) && $_GET['id'] ) {
-                    $id = $_GET['id'];
+                $metabox_type = 'post';
+                $request_page = sanitize_key( (string) filter_input( INPUT_GET, 'page', FILTER_UNSAFE_RAW ) );
+                $request_action = sanitize_key( (string) filter_input( INPUT_GET, 'action', FILTER_UNSAFE_RAW ) );
+                $request_id = filter_input( INPUT_GET, 'id', FILTER_VALIDATE_INT );
+                $request_id = ( false !== $request_id ? (int) $request_id : 0 );
+                if ( current_user_can( 'manage_options' ) && $request_page == 'wc-orders' && $request_action == 'edit' && $request_id ) {
+                    $id = $request_id;
                 } else {
-                    $id = $post->ID;
+                    $id = ( $post instanceof WP_Post ? (int) $post->ID : false );
                 }
+            } elseif ( 'menu_item' === $metabox_type ) {
+                $id = (int) $widget_instance;
+                $is_menu_item = true;
             } else {
-                $id = ( isset( $_GET['tag_ID'] ) ? (int) $_GET['tag_ID'] : false );
+                $id = filter_input( INPUT_GET, 'tag_ID', FILTER_VALIDATE_INT );
+                $id = ( null !== $id && false !== $id ? (int) $id : false );
             }
-            if ( $id === false ) {
+            if ( 'widget' === $metabox_type ) {
+                $id = false;
+            } elseif ( $id === false ) {
                 // For menu item
                 $id = (int) $widget_instance;
                 $is_menu_item = true;
@@ -1599,11 +1760,15 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         );
                         $rsc_user_role_selected = ( empty( $rsc_user_role ) ? 'administrator' : $rsc_user_role );
                     }
-                    $editable_roles = array_reverse( get_editable_roles() );
+                    if ( !function_exists( 'get_editable_roles' ) ) {
+                        require_once ABSPATH . 'wp-admin/includes/user.php';
+                    }
+                    $editable_roles = ( function_exists( 'get_editable_roles' ) ? get_editable_roles() : array() );
+                    $editable_roles = ( is_array( $editable_roles ) ? array_reverse( $editable_roles ) : array() );
                     if ( !$return ) {
                         ?>
                         <label><?php 
-                        _e( 'Select a User Role', 'rsc' );
+                        esc_html_e( 'Select a User Role', 'restricted-content' );
                         ?></label>
                         <select name="<?php 
                         echo esc_attr( Restricted_Content::get_field_name( '_rsc_user_role_rsc_post_meta[]', $widget, $widget_instance ) );
@@ -1617,6 +1782,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             ?> value="<?php 
                             echo esc_attr( $role );
                             ?>"><?php 
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                             echo rsc_esc_html( $name );
                             ?></option><?php 
                         }
@@ -1632,7 +1798,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         return array(
                             '_rsc_user_role_rsc_post_meta' => array(
                                 'type'        => 'SELECT2',
-                                'label'       => __( 'Select a User Role', 'rsc' ),
+                                'label'       => __( 'Select a User Role', 'restricted-content' ),
                                 'options'     => $control_roles,
                                 'default'     => [],
                                 'multiple'    => true,
@@ -1656,7 +1822,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         );
                         ?>
                         <label><?php 
-                        _e( 'User Capability', 'rsc' );
+                        esc_html_e( 'User Capability', 'restricted-content' );
                         ?></label>
                         <input type="text" name="<?php 
                         echo esc_attr( Restricted_Content::get_field_name( '_rsc_capability_rsc_post_meta', $widget, $widget_instance ) );
@@ -1668,7 +1834,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         return array(
                             '_rsc_capability_rsc_post_meta' => array(
                                 'type'        => 'TEXT',
-                                'label'       => __( 'User Capability', 'rsc' ),
+                                'label'       => __( 'User Capability', 'restricted-content' ),
                                 'label_block' => true,
                                 'placeholder' => 'manage_options',
                                 'condition'   => array(
@@ -1693,14 +1859,14 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     }
                     ?>
                     <label><?php 
-                    _e( 'Who Purchased', 'rsc' );
+                    esc_html_e( 'Who Purchased', 'restricted-content' );
                     ?></label>
                     <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_tickera_users_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_tickera_radio" value="anything" <?php 
                     checked( $rsc_tickera_users, 'anything', true );
                     ?> /> <?php 
-                    _e( 'Any ticket type', 'rsc' );
+                    esc_html_e( 'Any ticket type', 'restricted-content' );
                     ?>
                     <br/>
                     <?php 
@@ -1712,7 +1878,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" class="rsc_tickera_radio" value="event" <?php 
                         checked( $rsc_tickera_users, 'event', true );
                         ?> /> <?php 
-                        _e( 'Any ticket type for a specific event', 'rsc' );
+                        esc_html_e( 'Any ticket type for a specific event', 'restricted-content' );
                         ?><br/>
                     <?php 
                     }
@@ -1722,7 +1888,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     ?>" class="rsc_tickera_radio" value="ticket_type" <?php 
                     checked( $rsc_tickera_users, 'ticket_type', true );
                     ?> /> <?php 
-                    _e( 'Specific ticket type', 'rsc' );
+                    esc_html_e( 'Specific ticket type', 'restricted-content' );
                     ?><br/>
                     <div class="rsc_sub_sub rsc_tickera_event rsc_sub_hide rsc_sub_sub_metabox_event">
                         <select name="<?php 
@@ -1751,6 +1917,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         echo esc_attr( ( is_array( $rsc_tickera_users_event ) && in_array( $event->ID, $rsc_tickera_users_event ) ? 'selected' : '' ) );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $event->post_title );
                         ?></option>
                             <?php 
@@ -1793,7 +1960,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         if ( empty( $event_title ) ) {
                             $event_title = sprintf( 
                                 /* translators: %s: Event ID */
-                                __( 'Event ID: %s', 'rsc' ),
+                                __( 'Event ID: %s', 'restricted-content' ),
                                 $event_id
                              );
                         }
@@ -1803,6 +1970,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         echo esc_attr( ( is_array( $rsc_tickera_users_ticket_type ) && in_array( $ticket_type->ID, $rsc_tickera_users_ticket_type ) ? 'selected' : '' ) );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $ticket_type->post_title . ' (' . $event_title . ')' . ' (#' . (int) $ticket_type->ID . ')' );
                         ?></option><?php 
                     }
@@ -1861,21 +2029,21 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     }
                     ?>
                     <label><?php 
-                    _e( 'Who Purchased', 'rsc' );
+                    esc_html_e( 'Who Purchased', 'restricted-content' );
                     ?></label>
                     <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_woo_radio" value="anything" <?php 
                     checked( $rsc_woo_users, 'anything', true );
                     ?> /> <?php 
-                    _e( 'Any product', 'rsc' );
+                    esc_html_e( 'Any product', 'restricted-content' );
                     ?><br/>
                     <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_woo_radio" value="product" <?php 
                     checked( $rsc_woo_users, 'product', true );
                     ?> /> <?php 
-                    _e( 'Specific product', 'rsc' );
+                    esc_html_e( 'Specific product', 'restricted-content' );
                     ?><br/>
                     <div class="rsc_sub_sub rsc_woo_product rsc_sub_hide rsc_sub_sub_metabox_product">
                         <select name="<?php 
@@ -1904,6 +2072,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         echo esc_attr( ( is_array( $rsc_woo_users_product ) && in_array( $product->ID, $rsc_woo_users_product ) ? 'selected' : '' ) );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $product->post_title . ' (#' . (int) $product->ID . ')' );
                         ?></option>
                             <?php 
@@ -1912,26 +2081,26 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         </select>
                         <br/><br/>
                         <label><?php 
-                    _e( 'Duration', 'rsc' );
+                    esc_html_e( 'Duration', 'restricted-content' );
                     ?></label>
                         <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_time_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_woo_time_radio" value="indefinitely" <?php 
                     checked( $rsc_woo_users_time, 'indefinitely', true );
                     ?> /> <?php 
-                    _e( 'Indefinitely', 'rsc' );
+                    esc_html_e( 'Indefinitely', 'restricted-content' );
                     ?><br/>
                         <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_time_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_woo_time_radio" value="limited" <?php 
                     checked( $rsc_woo_users_time, 'limited', true );
                     ?> /> <?php 
-                    _e( 'Limited time after purchase', 'rsc' );
+                    esc_html_e( 'Limited time after purchase', 'restricted-content' );
                     ?><br/>
                         <div class="rsc_woo_times">
                             <label>
                                 <?php 
-                    _e( 'Days:', 'rsc' );
+                    esc_html_e( 'Days:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_time_days_rsc_post_meta', $widget, $widget_instance ) );
@@ -1944,6 +2113,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $day, $days_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $day );
                         ?></option><?php 
                     }
@@ -1952,7 +2122,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             </label>
                             <label>
                                 <?php 
-                    _e( 'Hours:', 'rsc' );
+                    esc_html_e( 'Hours:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_time_hours_rsc_post_meta', $widget, $widget_instance ) );
@@ -1965,6 +2135,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $hour, $hours_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $hour );
                         ?></option><?php 
                     }
@@ -1973,7 +2144,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             </label>
                             <label>
                                 <?php 
-                    _e( 'Minutes:', 'rsc' );
+                    esc_html_e( 'Minutes:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_woo_users_time_minutes_rsc_post_meta', $widget, $widget_instance ) );
@@ -1986,6 +2157,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $minute, $minutes_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $minute );
                         ?></option><?php 
                     }
@@ -2046,21 +2218,21 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                     }
                     ?>
                     <label><?php 
-                    _e( 'Who Purchased', 'rsc' );
+                    esc_html_e( 'Who Purchased', 'restricted-content' );
                     ?></label>
                     <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_edd_radio" value="anything" <?php 
                     checked( $rsc_edd_users, 'anything', true );
                     ?> /> <?php 
-                    _e( 'Any product', 'rsc' );
+                    esc_html_e( 'Any product', 'restricted-content' );
                     ?><br/>
                     <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_edd_radio" value="product" <?php 
                     checked( $rsc_edd_users, 'product', true );
                     ?> /> <?php 
-                    _e( 'Specific product', 'rsc' );
+                    esc_html_e( 'Specific product', 'restricted-content' );
                     ?><br/>
                     <div class="rsc_sub_sub rsc_edd_product rsc_sub_hide rsc_sub_sub_metabox_product">
                         <select name="<?php 
@@ -2089,6 +2261,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         echo esc_attr( ( is_array( $rsc_edd_users_product ) && in_array( $product->ID, $rsc_edd_users_product ) ? 'selected' : '' ) );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $product->post_title );
                         ?></option>
                             <?php 
@@ -2097,26 +2270,26 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         </select>
                         <br/><br/>
                         <label><?php 
-                    _e( 'Duration', 'rsc' );
+                    esc_html_e( 'Duration', 'restricted-content' );
                     ?></label>
                         <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_time_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_edd_time_radio" value="indefinitely" <?php 
                     checked( $rsc_edd_users_time, 'indefinitely', true );
                     ?> /> <?php 
-                    _e( 'Indefinitely', 'rsc' );
+                    esc_html_e( 'Indefinitely', 'restricted-content' );
                     ?><br/>
                         <input type="radio" name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_time_rsc_post_meta', $widget, $widget_instance ) );
                     ?>" class="rsc_edd_time_radio" value="limited" <?php 
                     checked( $rsc_edd_users_time, 'limited', true );
                     ?> /> <?php 
-                    _e( 'Limited time after purchase', 'rsc' );
+                    esc_html_e( 'Limited time after purchase', 'restricted-content' );
                     ?><br/>
                         <div class="rsc_edd_times">
                             <label>
                                 <?php 
-                    _e( 'Days:', 'rsc' );
+                    esc_html_e( 'Days:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_time_days_rsc_post_meta', $widget, $widget_instance ) );
@@ -2129,6 +2302,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $day, $days_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $day );
                         ?></option><?php 
                     }
@@ -2137,7 +2311,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             </label>
                             <label>
                                 <?php 
-                    _e( 'Hours:', 'rsc' );
+                    esc_html_e( 'Hours:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_time_hours_rsc_post_meta', $widget, $widget_instance ) );
@@ -2150,6 +2324,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $hour, $hours_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $hour );
                         ?></option><?php 
                     }
@@ -2158,7 +2333,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                             </label>
                             <label>
                                 <?php 
-                    _e( 'Minutes:', 'rsc' );
+                    esc_html_e( 'Minutes:', 'restricted-content' );
                     ?><br/>
                                 <select name="<?php 
                     echo esc_attr( Restricted_Content::get_field_name( '_rsc_edd_users_time_minutes_rsc_post_meta', $widget, $widget_instance ) );
@@ -2171,6 +2346,7 @@ if ( !class_exists( 'Restricted_Content' ) ) {
                         ?>" <?php 
                         selected( $minute, $minutes_selected, true );
                         ?>><?php 
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                         echo rsc_esc_html( $minute );
                         ?></option><?php 
                     }

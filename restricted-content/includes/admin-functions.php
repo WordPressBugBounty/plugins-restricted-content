@@ -115,7 +115,7 @@ function rsc_premium_vs_free_button_widget_welcome() {
         <div class="rsc-already-featured"></div>
     <?php } else { ?>
         <div class="rsc-premium-features-button">
-            <a href="https://restrict.io/pricing/" target="_blank"><span><?php _e( 'Go Premium', 'rsc' ); ?></span>
+            <a href="https://restrict.io/pricing/" target="_blank"><span><?php esc_html_e( 'Go Premium', 'restricted-content' ); ?></span>
                 <div class="rsc-premium-icon"></div>
             </a>
         </div>
@@ -128,96 +128,96 @@ function rsc_welcome_widget_copy( $type = 'free' ) {
 
     $copy[ 'free' ] = array(
         'content' => array(
-            'title' => __( 'Restrict the content of pages or posts', 'rsc' ),
-            'description' => __( 'When creating new or editing existing page or post, you will find a dropdown menu below the content area that will allow you to <a href="https://restrict.io/restricted-content-documentation/restricting-the-content-of-page-or-post/">select the criteria</a> based on which the content should be restricted. ', 'rsc' )
+            'title' => __( 'Restrict the content of pages or posts', 'restricted-content' ),
+            'description' => __( 'When creating new or editing existing page or post, you will find a dropdown menu below the content area that will allow you to <a href="https://restrict.io/restricted-content-documentation/restricting-the-content-of-page-or-post/">select the criteria</a> based on which the content should be restricted. ', 'restricted-content' )
         ),
         'integrations' => array(
-            'title' => __( 'Integrations', 'rsc' ),
-            'description' => __( 'Restrict has seamless integrations with <a href="https://restrict.io/restricted-content-documentation/tickera-integration/" target="_blank">Tickera</a>, <a href="https://restrict.io/restricted-content-documentation/woocommerce-integration/" target="_blank">WooCommerce</a>, <a href="https://restrict.io/restricted-content-documentation/easy-digital-downloads-integration/">Easy Digital Downloads</a> and <a href="https://restrict.io/restricted-content-documentation/simple-urls/">Simple URLs</a> allowing you to restrict the content of pages or posts based on criteria specific for these plugins (i.e. show content to users who purchased a specific ticket or WooCommerce product). ', 'rsc' )
+            'title' => __( 'Integrations', 'restricted-content' ),
+            'description' => __( 'Restrict has seamless integrations with <a href="https://restrict.io/restricted-content-documentation/tickera-integration/" target="_blank">Tickera</a>, <a href="https://restrict.io/restricted-content-documentation/woocommerce-integration/" target="_blank">WooCommerce</a>, <a href="https://restrict.io/restricted-content-documentation/easy-digital-downloads-integration/">Easy Digital Downloads</a> and <a href="https://restrict.io/restricted-content-documentation/simple-urls/">Simple URLs</a> allowing you to restrict the content of pages or posts based on criteria specific for these plugins (i.e. show content to users who purchased a specific ticket or WooCommerce product). ', 'restricted-content' )
         ),
         'shortcodes' => array(
-            'title' => __( 'Restrict part or all the content', 'rsc' ),
-            'description' => __( 'Premium version of Restrict allows you to <a href="https://restrict.io/restricted-content-documentation/shortcodes/">restrict the content partially</a>. Also you can set default restriction rules for the available post types or apply the same rules for all the posts of the <a href="https://restrict.io/restricted-content-documentation/post-types/">specific post type</a>.', 'rsc' )
+            'title' => __( 'Restrict part or all the content', 'restricted-content' ),
+            'description' => __( 'Premium version of Restrict allows you to <a href="https://restrict.io/restricted-content-documentation/shortcodes/">restrict the content partially</a>. Also you can set default restriction rules for the available post types or apply the same rules for all the posts of the <a href="https://restrict.io/restricted-content-documentation/post-types/">specific post type</a>.', 'restricted-content' )
         ),
         'category' => array(
-            'title' => __( 'Restricting a whole category', 'rsc' ),
-            'description' => __( 'There might be cases where you would want to <a href="https://restrict.io/restricted-content-documentation/rectricting-access-to-post-categories/">restrict the whole post category</a>. Premium version of Restrict takes care of that too, allowing you to easily set the criteria based on which a certain post category will be displayed or hidden. ', 'rsc' )
+            'title' => __( 'Restricting a whole category', 'restricted-content' ),
+            'description' => __( 'There might be cases where you would want to <a href="https://restrict.io/restricted-content-documentation/rectricting-access-to-post-categories/">restrict the whole post category</a>. Premium version of Restrict takes care of that too, allowing you to easily set the criteria based on which a certain post category will be displayed or hidden. ', 'restricted-content' )
         ),
         'widgets' => array(
-            'title' => __( 'Hide and show widgets conditionally', 'rsc' ),
-            'description' => __( 'Make widgets <a href="https://restrict.io/restricted-content-documentation/restricting-visibility-of-wordpress-widgets/">show or disappear</a> for different users! Similarly to the content restriction, you can also restrict which widgets will be shown to what user. ', 'rsc' )
+            'title' => __( 'Hide and show widgets conditionally', 'restricted-content' ),
+            'description' => __( 'Make widgets <a href="https://restrict.io/restricted-content-documentation/restricting-visibility-of-wordpress-widgets/">show or disappear</a> for different users! Similarly to the content restriction, you can also restrict which widgets will be shown to what user. ', 'restricted-content' )
         ),
         'login' => array(
-            'title' => __( 'Login form anywhere', 'rsc' ),
-            'description' => __( 'Regardless of whether you’re using Gutenberg or classic editor, we made it easy for you to place the <a href="https://restrict.io/restricted-content-documentation/login-form/">login form</a> on any page or post you want or like', 'rsc' )
+            'title' => __( 'Login form anywhere', 'restricted-content' ),
+            'description' => __( 'Regardless of whether you’re using Gutenberg or classic editor, we made it easy for you to place the <a href="https://restrict.io/restricted-content-documentation/login-form/">login form</a> on any page or post you want or like', 'restricted-content' )
         ),
         'menus' => array(
-            'title' => __( 'Custom menu', 'rsc' ),
-            'description' => __( 'Not every menu item should be accessed by everyone. Because of this, we have integrated simple yet powerful control over each individual menu item so that you can show or hide it based on various criteria.', 'rsc' )
+            'title' => __( 'Custom menu', 'restricted-content' ),
+            'description' => __( 'Not every menu item should be accessed by everyone. Because of this, we have integrated simple yet powerful control over each individual menu item so that you can show or hide it based on various criteria.', 'restricted-content' )
         ),
         'hide_show_menu' => array(
-            'title' => __( 'Hide or show menu items', 'rsc' ),
-            'description' => __( 'Easily select which criteria is required to view which menu item. Each menu item in any of your menus may have <a href="https://restrict.io/restricted-content-documentation/restricting-menu-items/">different criteria for visibility</a>.', 'rsc' )
+            'title' => __( 'Hide or show menu items', 'restricted-content' ),
+            'description' => __( 'Easily select which criteria is required to view which menu item. Each menu item in any of your menus may have <a href="https://restrict.io/restricted-content-documentation/restricting-menu-items/">different criteria for visibility</a>.', 'restricted-content' )
         ),
         'site_shield' => array(
-            'title' => __( 'Site Shield', 'rsc' ),
-            'description' => __( 'Lock your website to all non-logged in users and restrict It takes just one click!', 'rsc' )
+            'title' => __( 'Site Shield', 'restricted-content' ),
+            'description' => __( 'Lock your website to all non-logged in users and restrict It takes just one click!', 'restricted-content' )
         ),
         'bots_crawlers' => array(
-            'title' => __( 'Whitelist SEO bots and web crawlers', 'rsc' ),
-            'description' => __( 'Make the content on your website restricted to humans but let SEO bots and web crawlers access it without restrictions to benefit from SEO juice.', 'rsc' ),
+            'title' => __( 'Whitelist SEO bots and web crawlers', 'restricted-content' ),
+            'description' => __( 'Make the content on your website restricted to humans but let SEO bots and web crawlers access it without restrictions to benefit from SEO juice.', 'restricted-content' ),
         )
     );
 
     $copy[ 'premium' ] = array(
         'content' => array(
-            'title' => __( 'Restrict the content of pages or posts', 'rsc' ),
-            'description' => __( 'When creating new or editing existing page or post, you will find a dropdown menu below the content area that will allow you to select the criteria based on which the content should be restricted.', 'rsc' )
+            'title' => __( 'Restrict the content of pages or posts', 'restricted-content' ),
+            'description' => __( 'When creating new or editing existing page or post, you will find a dropdown menu below the content area that will allow you to select the criteria based on which the content should be restricted.', 'restricted-content' )
         ),
         'integrations' => array(
-            'title' => __( 'Integrations', 'rsc' ),
-            'description' => __( 'Restrict has seamless integrations with <a href="https://restrict.io/restricted-content-documentation/tickera-integration/" target="_blank">Tickera</a>, <a href="https://restrict.io/restricted-content-documentation/woocommerce-integration/" target="_blank">WooCommerce</a>, <a href="https://restrict.io/restricted-content-documentation/easy-digital-downloads-integration/">Easy Digital Downloads</a> and <a href="https://restrict.io/restricted-content-documentation/simple-urls/">Simple URLs</a> allowing you to restrict the content of pages or posts based on criteria specific for these plugins (i.e. show content to users who purchased a specific ticket or WooCommerce product).', 'rsc' )
+            'title' => __( 'Integrations', 'restricted-content' ),
+            'description' => __( 'Restrict has seamless integrations with <a href="https://restrict.io/restricted-content-documentation/tickera-integration/" target="_blank">Tickera</a>, <a href="https://restrict.io/restricted-content-documentation/woocommerce-integration/" target="_blank">WooCommerce</a>, <a href="https://restrict.io/restricted-content-documentation/easy-digital-downloads-integration/">Easy Digital Downloads</a> and <a href="https://restrict.io/restricted-content-documentation/simple-urls/">Simple URLs</a> allowing you to restrict the content of pages or posts based on criteria specific for these plugins (i.e. show content to users who purchased a specific ticket or WooCommerce product).', 'restricted-content' )
         ),
         'shortcodes' => array(
-            'title' => __( 'Restrict part or all the content', 'rsc' ),
-            'description' => sprintf( /* translators: %1$s: Restrict shortcode settings url. %2$s Restrict settings url. */ __( 'To restrict only part of the content. head to the <a href="%1$s">Shortcodes</a> area and generate the code for partial content restriction. You can also navigate to <a href="%2$s">Post Types</a> area to set default content restriction for specific post types. ', 'rsc' ), admin_url( 'admin.php?page=restricted_content_settings&tab=shortcodes' ), admin_url( 'admin.php?page=restricted_content_settings&tab=post_types' ) )
+            'title' => __( 'Restrict part or all the content', 'restricted-content' ),
+            'description' => sprintf( /* translators: %1$s: Restrict shortcode settings url. %2$s Restrict settings url. */ __( 'To restrict only part of the content. head to the <a href="%1$s">Shortcodes</a> area and generate the code for partial content restriction. You can also navigate to <a href="%2$s">Post Types</a> area to set default content restriction for specific post types. ', 'restricted-content' ), admin_url( 'admin.php?page=restricted_content_settings&tab=shortcodes' ), admin_url( 'admin.php?page=restricted_content_settings&tab=post_types' ) )
         ),
         'category' => array(
-            'title' => __( 'Restricting a whole category', 'rsc' ),
-            'description' => sprintf( /* translators: %s: Restrict category url. */ __( 'Within the <a href="%s">Categories area</a> you can now restrict which categories should be visible or hidden by setting the desired criteria while creating new or editing existing category.  ', 'rsc' ), admin_url( 'edit-tags.php?taxonomy=category' ) )
+            'title' => __( 'Restricting a whole category', 'restricted-content' ),
+            'description' => sprintf( /* translators: %s: Restrict category url. */ __( 'Within the <a href="%s">Categories area</a> you can now restrict which categories should be visible or hidden by setting the desired criteria while creating new or editing existing category.  ', 'restricted-content' ), admin_url( 'edit-tags.php?taxonomy=category' ) )
         ),
         'widgets' => array(
-            'title' => __( 'Hide and show widgets conditionally', 'rsc' ),
-            'description' => sprintf( /* translators: %s: Restrict widget url. */ __( 'In the <a href="%s">Widgets area</a> of your website, you will notice that every widget that you have placed in any of your widgets areas will now have a menu allowing you to display or hide each specific widget to certain users. ', 'rsc' ), admin_url( 'widgets.php' ) )
+            'title' => __( 'Hide and show widgets conditionally', 'restricted-content' ),
+            'description' => sprintf( /* translators: %s: Restrict widget url. */ __( 'In the <a href="%s">Widgets area</a> of your website, you will notice that every widget that you have placed in any of your widgets areas will now have a menu allowing you to display or hide each specific widget to certain users. ', 'restricted-content' ), admin_url( 'widgets.php' ) )
         ),
         'login' => array(
-            'title' => __( 'Login form anywhere', 'rsc' ),
-            'description' => sprintf( /* translators: %s: Restrict login form url. */ __( 'Navigate to the <a href="%s">Login Form</a> area where you will find plenty of options to tailor your login form the way you want it. If you’re using Gutenberg editor, you can simply add a Login Form block for Gutenberg, with the exact same options. ', 'rsc' ), admin_url( 'admin.php?page=restricted_content_settings&tab=login_form' ) )
+            'title' => __( 'Login form anywhere', 'restricted-content' ),
+            'description' => sprintf( /* translators: %s: Restrict login form url. */ __( 'Navigate to the <a href="%s">Login Form</a> area where you will find plenty of options to tailor your login form the way you want it. If you’re using Gutenberg editor, you can simply add a Login Form block for Gutenberg, with the exact same options. ', 'restricted-content' ), admin_url( 'admin.php?page=restricted_content_settings&tab=login_form' ) )
         ),
         'menus' => array(
-            'title' => __( 'Custom menu', 'rsc' ),
-            'description' => sprintf( /* translators: %s: Restrict navigation menu url. */ __( 'Within the <a href="%s">Menus area</a> of your website each menu item now has the dropdown menu, allowing you to show or hide that item based on selected criteria.', 'rsc' ), admin_url( 'nav-menus.php' ) )
+            'title' => __( 'Custom menu', 'restricted-content' ),
+            'description' => sprintf( /* translators: %s: Restrict navigation menu url. */ __( 'Within the <a href="%s">Menus area</a> of your website each menu item now has the dropdown menu, allowing you to show or hide that item based on selected criteria.', 'restricted-content' ), admin_url( 'nav-menus.php' ) )
         ),
         'hide_show_menu' => array(
-            'title' => __( 'Hide or show menu items', 'rsc' ),
-            'description' => sprintf( /* translators: %s: Restrict navigation menu url. */ __( 'Easily select which criteria is required to view which menu item. Each menu item in any of your <a href="%s">menus</a> may have different criteria for visibility.', 'rsc' ), admin_url( 'nav-menus.php' ) )
+            'title' => __( 'Hide or show menu items', 'restricted-content' ),
+            'description' => sprintf( /* translators: %s: Restrict navigation menu url. */ __( 'Easily select which criteria is required to view which menu item. Each menu item in any of your <a href="%s">menus</a> may have different criteria for visibility.', 'restricted-content' ), admin_url( 'nav-menus.php' ) )
         ),
         'site_shield' => array(
-            'title' => __( 'Site Shield', 'rsc' ),
-            'description' => __( 'Lock your website to all non-logged in users and restrict It takes just one click!', 'rsc' )
+            'title' => __( 'Site Shield', 'restricted-content' ),
+            'description' => __( 'Lock your website to all non-logged in users and restrict It takes just one click!', 'restricted-content' )
         ),
         'bots_crawlers' => array(
-            'title' => __( 'Whitelist SEO bots and web crawlers', 'rsc' ),
-            'description' => __( 'Make the content on your website restricted to humans but let SEO bots and web crawlers access it without restrictions to benefit from SEO juice.', 'rsc' ),
+            'title' => __( 'Whitelist SEO bots and web crawlers', 'restricted-content' ),
+            'description' => __( 'Make the content on your website restricted to humans but let SEO bots and web crawlers access it without restrictions to benefit from SEO juice.', 'restricted-content' ),
         )
     );
 
     if ( class_exists( 'Tickera\TC' ) && ! class_exists( 'WooCommerce' ) ) {
-        $copy[ 'premium' ][ 'integrations' ][ 'description' ] = __( 'Content of all the posts and pages can be restricted by criteria related to Tickera plugin. For example, you can restrict the visibility of the content based on whether the visitor has purchased a ticket for the specific event or specific ticket type. ', 'rsc' );
+        $copy[ 'premium' ][ 'integrations' ][ 'description' ] = __( 'Content of all the posts and pages can be restricted by criteria related to Tickera plugin. For example, you can restrict the visibility of the content based on whether the visitor has purchased a ticket for the specific event or specific ticket type. ', 'restricted-content' );
     }
 
     if ( ! class_exists( 'Tickera\TC' ) && class_exists( 'WooCommerce' ) ) {
-        $copy[ 'premium' ][ 'integrations' ][ 'description' ] = __( 'Content of all the posts and pages can be restricted by criteria related specifically to WooCommerce. For example, you can restrict the visibility of the content based on whether the visitor has purchased any or some specific WooCommerce product.', 'rsc' );
+        $copy[ 'premium' ][ 'integrations' ][ 'description' ] = __( 'Content of all the posts and pages can be restricted by criteria related specifically to WooCommerce. For example, you can restrict the visibility of the content based on whether the visitor has purchased any or some specific WooCommerce product.', 'restricted-content' );
     }
 
     return $copy[ $type ];
@@ -237,6 +237,7 @@ if ( ! function_exists( 'rsc_tooltip' ) ) {
             $tooltip = '<a title="' . htmlentities( $content ) . '" class="rsc_tooltip"><span class="dashicons dashicons-editor-help"></span></a>';
 
             if ( $echo ) {
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
                 echo rsc_esc_html( $tooltip );
 
             } else {
@@ -256,22 +257,22 @@ if ( ! function_exists( 'rsc_yes_no' ) ) {
         } ?>
         <div class="rsc-yes-no-wrap">
             <div class="rsc-customized-yes-no rsc-no-active">
-                <div class="rsc-yes"><?php _e( 'Yes', 'rsc' ); ?> </div>
+                <div class="rsc-yes"><?php esc_html_e( 'Yes', 'restricted-content' ); ?> </div>
                 <div class="rsc-ball"></div>
-                <div class="rsc-no"><?php _e( 'No', 'rsc' ); ?> </div>
+                <div class="rsc-no"><?php esc_html_e( 'No', 'restricted-content' ); ?> </div>
             </div><!-- .tc-customized-yes-no -->
             <label>
-                <input type="radio" class="<?php echo esc_attr( $field_name ); ?> rsc-radio-yes" name="rsc_settings[<?php echo esc_attr( $field_name ); ?>]" value="yes" <?php checked( $checked, 'yes', true ); ?> /><?php _e( 'Yes', 'rsc' ); ?>
+                <input type="radio" class="<?php echo esc_attr( $field_name ); ?> rsc-radio-yes" name="rsc_settings[<?php echo esc_attr( $field_name ); ?>]" value="yes" <?php checked( $checked, 'yes', true ); ?> /><?php esc_html_e( 'Yes', 'restricted-content' ); ?>
             </label>
             <label>
-                <input type="radio" class="<?php echo esc_attr( $field_name ); ?> rsc-radio-no" name="rsc_settings[<?php echo esc_attr( $field_name ); ?>]" value="no" <?php checked( $checked, 'no', true ); ?> /><?php _e( 'No', 'rsc' ); ?>
+                <input type="radio" class="<?php echo esc_attr( $field_name ); ?> rsc-radio-no" name="rsc_settings[<?php echo esc_attr( $field_name ); ?>]" value="no" <?php checked( $checked, 'no', true ); ?> /><?php esc_html_e( 'No', 'restricted-content' ); ?>
             </label>
         </div><!-- rsc-yes-no-wrap --><?php
     }
 }
 
 function rsc_get_default_admin_shortcode_message() {
-    return __( 'Your content here', 'rsc' );
+    return __( 'Your content here', 'restricted-content' );
 }
 
 if ( ! function_exists( 'rsc_show_post_type_options' ) ) {
@@ -305,7 +306,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     <div class="rsc-input-wrap">
                         <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                     </div>
-                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                 </div><?php
                 break;
 
@@ -314,19 +315,21 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     <div class="rsc-input-wrap">
                         <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                     </div>
-                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                 </div><?php
                 break;
 
             case 'content_availability_specific_role': ?>
                 <div class="rsc-chosen-multiple">
                     <div class="tc-custom-chosen-select-wrap">
-                        <select data-placeholder="<?php esc_attr_e( 'Select User Roles', 'rsc' ); ?>" id="rsc_chosen_specific_role" multiple class="chosen-select">
+                        <select data-placeholder="<?php esc_attr_e( 'Select User Roles', 'restricted-content' ); ?>" id="rsc_chosen_specific_role" multiple class="chosen-select">
                             <?php
                             $editable_roles = array_reverse( get_editable_roles() );
                             foreach ( $editable_roles as $role => $details ) {
                                 $name = translate_user_role( $details[ 'name' ] ); ?>
-                                <option value="<?php echo esc_attr( $role ); ?>"><?php echo rsc_esc_html( $name ); ?></option><?php
+                                <option value="<?php echo esc_attr( $role ); ?>"><?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                    echo rsc_esc_html( $name ); ?></option><?php
                             }
                             ?>
                         </select>
@@ -336,16 +339,16 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     <div class="rsc-input-wrap">
                         <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                     </div>
-                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                 </div><?php
                 break;
 
             case 'content_availability_tickera_users': ?>
                 <div class="rsc-ticket-type-purchased">
-                    <div class="rsc-input-text"><?php _e( 'Who Purchased', 'rsc' ); ?></div>
+                    <div class="rsc-input-text"><?php esc_html_e( 'Who Purchased', 'restricted-content' ); ?></div>
                     <div class="rsc-ticket-type-select-input">
                         <input type="radio" id="any_ticket_type" class="rsc_who_purchased_tickera_radio" name="who_purchased_tickera" value="any_ticket_type" checked>
-                        <label for="any_ticket_type"><?php _e( 'Any ticket type', 'rsc' ); ?></label>
+                        <label for="any_ticket_type"><?php esc_html_e( 'Any ticket type', 'restricted-content' ); ?></label>
                     </div>
 
                     <?php if ( apply_filters( 'tc_is_woo', false ) == false ) {//Tickera isn't in the Bridge mode because this option doesn't work with WooCommerce
@@ -358,7 +361,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                             <div class="rsc-ticket-type-select-input">
                                 <input type="radio" id="specific_event" class="rsc_who_purchased_tickera_radio"
                                        name="who_purchased_tickera" value="specific_event">
-                                <label for="specific_event"><?php _e( 'Any ticket type for a specific event', 'rsc' ); ?></label>
+                                <label for="specific_event"><?php esc_html_e( 'Any ticket type for a specific event', 'restricted-content' ); ?></label>
                             </div>
                         <?php }
                     }
@@ -369,18 +372,19 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                             'posts_per_page' => -1,
                         ) );
                     } else {
-                        $rsc_ticket_types = get_posts( array(
-                            'post_type' => 'product',
-                            'posts_per_page' => -1,
-                            'meta_key' => '_event_name'
-                        ) );
+	                        $rsc_ticket_types = get_posts( array(
+	                            'post_type' => 'product',
+	                            'posts_per_page' => -1,
+                                // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Must resolve the existing posts and meta.
+	                            'meta_key' => '_event_name'
+	                        ) );
                     }
 
                     if ( count( $rsc_ticket_types ) ) { ?>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="specific_ticket_type" class="rsc_who_purchased_tickera_radio"
                                    name="who_purchased_tickera" value="specific_ticket_type">
-                            <label for="specific_ticket_type"><?php _e( 'Specific ticket type', 'rsc' ); ?></label>
+                            <label for="specific_ticket_type"><?php esc_html_e( 'Specific ticket type', 'restricted-content' ); ?></label>
                         </div>
                     <?php } ?>
                 </div><!-- .rsc-ticket-type-purchased -->
@@ -389,17 +393,19 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div>
                 <div class="rsc-chosen-multiple specific_event_selected content_availability_tickera_users" style="display: none;">
                     <div class="tc-custom-chosen-select-wrap">
-                        <select data-placeholder="<?php _e( 'Select Events', 'rsc' ); ?>" multiple class="chosen-select" id="rsc_chosen_tickera_users_specific_event">
+                        <select data-placeholder="<?php esc_attr_e( 'Select Events', 'restricted-content' ); ?>" multiple class="chosen-select" id="rsc_chosen_tickera_users_specific_event">
                             <?php
                             $default_value = '[rsc_restrict_content allowed_to="tickera" tickera_options="event" tickera_event="0"]' . rsc_get_default_admin_shortcode_message() . '[/rsc_restrict_content]';
                             if ( isset( $rsc_events ) && $rsc_events ) {
                                 foreach ( $rsc_events as $event ) { ?>
-                                    <option value="<?php echo (int) $event->ID; ?>"><?php echo rsc_esc_html( $event->post_title ); ?></option><?php
+                                    <option value="<?php echo (int) $event->ID; ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $event->post_title ); ?></option><?php
                                 }
                             }
                             ?>
@@ -409,21 +415,23 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div>
                 <div class="rsc-chosen-multiple specific_ticket_type_selected content_availability_tickera_users" style="display: none;">
                     <?php $default_value = '[rsc_restrict_content allowed_to="tickera" tickera_options="ticket_type" tickera_ticket_type="0"]' . rsc_get_default_admin_shortcode_message() . '[/rsc_restrict_content]'; ?>
                     <div class="tc-custom-chosen-select-wrap">
-                        <select data-placeholder="<?php _e( 'Select Ticket Types', 'rsc' ); ?>" multiple class="chosen-select" id="rsc_chosen_tickera_users_specific_ticket_type">
+                        <select data-placeholder="<?php esc_attr_e( 'Select Ticket Types', 'restricted-content' ); ?>" multiple class="chosen-select" id="rsc_chosen_tickera_users_specific_ticket_type">
                             <?php
                             foreach ( $rsc_ticket_types as $ticket_type ) {
                                 $event_id = get_post_meta( $ticket_type->ID, apply_filters( 'tc_event_name_field_name', 'event_name' ), true );
                                 $event_title = get_the_title( $event_id );
                                 if ( empty( $event_title ) ) {
-                                    $event_title = sprintf( /* translators: %s: Event id. */ __( 'Event ID: %s', 'rsc' ), $event_id );
+                                    $event_title = sprintf( /* translators: %s: Event id. */ __( 'Event ID: %s', 'restricted-content' ), $event_id );
                                 } ?>
-                                <option value="<?php echo (int) $ticket_type->ID; ?>"><?php echo rsc_esc_html( $ticket_type->post_title . ' (' . $event_title . ')' ); ?></option><?php
+                                <option value="<?php echo (int) $ticket_type->ID; ?>"><?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                    echo rsc_esc_html( $ticket_type->post_title . ' (' . $event_title . ')' ); ?></option><?php
                             }
                             ?>
                         </select>
@@ -432,7 +440,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div><?php
                 break;
@@ -440,24 +448,24 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
             case 'content_availability_specific_users': ?>
                 <div class="rsc-user-capability">
                     <div class="rsc-capability-label">
-                        <?php _e( 'User Capability', 'rsc' ); ?>
+                        <?php esc_html_e( 'User Capability', 'restricted-content' ); ?>
                     </div>
-                    <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php _e( 'manage_options', 'rsc' ); ?>"/>
+                    <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php esc_attr_e( 'manage_options', 'restricted-content' ); ?>"/>
                 </div>
                 <div class="rsc-code-generator">
                     <div class="rsc-input-wrap">
                         <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_output" value="<?php echo esc_attr( $default_value ); ?>"/>
                     </div>
-                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                 </div><?php
                 break;
 
             case 'content_availability_woocommere': ?>
                 <div class="rsc-ticket-type-purchased">
-                    <div class="rsc-input-text"><?php _e( 'Who Purchased', 'rsc' ); ?></div>
+                    <div class="rsc-input-text"><?php esc_html_e( 'Who Purchased', 'restricted-content' ); ?></div>
                     <div class="rsc-ticket-type-select-input">
                         <input type="radio" id="any_product" value="any_product" class="rsc_who_purchased_woocommerce_radio" name="who_purchased_woocommerce" checked>
-                        <label for="any_product"><?php _e( 'Any Product', 'rsc' ); ?></label>
+                        <label for="any_product"><?php esc_html_e( 'Any Product', 'restricted-content' ); ?></label>
                     </div>
                     <?php $woo_products = get_posts( array(
                         'post_type' => 'product',
@@ -466,7 +474,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     if ( count( $woo_products ) ) { ?>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="specific_product" value="specific_product" class="rsc_who_purchased_woocommerce_radio" name="who_purchased_woocommerce">
-                            <label for="specific_product"><?php _e( 'Specific Product', 'rsc' ); ?></label>
+                            <label for="specific_product"><?php esc_html_e( 'Specific Product', 'restricted-content' ); ?></label>
                         </div>
                     <?php } ?>
                 </div><!-- .rsc-ticket-type-purchased -->
@@ -475,51 +483,59 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div>
                 <?php $default_value = esc_attr( '[rsc_restrict_content allowed_to="woo" woo_options="product" woo_product="0"]' . rsc_get_default_admin_shortcode_message() . '[/rsc_restrict_content]' ); ?>
                 <div class="rsc-chosen-multiple specific_woocommerce_product_selected content_availability_woocommerce_users" style="display: none;">
                     <div class="tc-custom-chosen-select-wrap">
-                        <select data-placeholder="<?php _e( 'Select Product', 'rsc' ); ?>" multiple class="chosen-select" id="rsc_chosen_woo_users_specific_product">
+                        <select data-placeholder="<?php esc_attr_e( 'Select Product', 'restricted-content' ); ?>" multiple class="chosen-select" id="rsc_chosen_woo_users_specific_product">
                             <?php foreach ( $woo_products as $product ) { ?>
-                                <option value="<?php echo (int) $product->ID; ?>"><?php echo rsc_esc_html( $product->post_title ); ?></option>
+                                <option value="<?php echo (int) $product->ID; ?>"><?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                    echo rsc_esc_html( $product->post_title ); ?></option>
                             <?php } ?>
                         </select>
                     </div><!-- .tc-custom-chosen-select-wrap -->
                     <div class="rsc-ticket-type-purchased">
-                        <div class="rsc-input-text"><?php _e( 'Duration', 'rsc' ); ?></div>
+                        <div class="rsc-input-text"><?php esc_html_e( 'Duration', 'restricted-content' ); ?></div>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="indefinitely" value="indefinitely" class="rsc_indefinit_time rsc_time_offer_shortcode" name="rsc_time_offer" checked>
-                            <label for="indefinitely"><?php esc_html_e( 'Indefinitely', 'rsc' ); ?></label>
+                            <label for="indefinitely"><?php esc_html_e( 'Indefinitely', 'restricted-content' ); ?></label>
                         </div>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="limited_time" value="limited_time" class="rsc_limited_time_offer rsc_time_offer_shortcode" name="rsc_time_offer">
-                            <label for="limited_time"><?php _e( 'Limited time after purchase', 'rsc' ); ?></label>
+                            <label for="limited_time"><?php esc_html_e( 'Limited time after purchase', 'restricted-content' ); ?></label>
                         </div>
                     </div>
                     <div class="rsc_woo_times_shortcode rsc_times_shortcode">
                         <label>
-                            <?php _e( 'Days:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Days:', 'restricted-content' ); ?><br/>
                             <select id="rsc_woo_limited_time_days">
                                 <?php for ( $day = apply_filters( 'rsc_woo_time_day_min', 0 ); $day <= apply_filters( 'rsc_woo_time_day_max', 365 ); $day++ ) { ?>
-                                    <option value="<?php echo esc_attr( $day ); ?>"><?php echo rsc_esc_html( $day ); ?></option>
+                                    <option value="<?php echo esc_attr( $day ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $day ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
                         <label>
-                            <?php _e( 'Hours:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Hours:', 'restricted-content' ); ?><br/>
                             <select id="rsc_woo_limited_time_hours">
                                 <?php for ( $hour = apply_filters( 'rsc_woo_time_hour_min', 0 ); $hour <= apply_filters( 'rsc_woo_time_hour_max', 24 ); $hour++ ) { ?>
-                                    <option value="<?php echo esc_attr( $hour ); ?>"><?php echo rsc_esc_html( $hour ); ?></option>
+                                    <option value="<?php echo esc_attr( $hour ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $hour ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
                         <label>
-                            <?php _e( 'Minutes:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Minutes:', 'restricted-content' ); ?><br/>
                             <select id="rsc_woo_limited_time_minutes">
                                 <?php for ( $minute = apply_filters( 'rsc_woo_time_minute_min', 0 ); $minute <= apply_filters( 'rsc_woo_time_minute_', 60 ); $minute++ ) { ?>
-                                    <option value="<?php echo esc_attr( $minute ); ?>"><?php echo rsc_esc_html( $minute ); ?></option>
+                                    <option value="<?php echo esc_attr( $minute ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $minute ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
@@ -528,17 +544,17 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div><?php
                 break;
 
             case 'content_availability_edd': ?>
                 <div class="rsc-ticket-type-purchased">
-                    <div class="rsc-input-text"><?php _e( 'Who Purchased', 'rsc' ); ?></div>
+                    <div class="rsc-input-text"><?php esc_html_e( 'Who Purchased', 'restricted-content' ); ?></div>
                     <div class="rsc-ticket-type-select-input">
                         <input type="radio" id="edd_any_product" value="any_product" class="rsc_who_purchased_edd_radio" name="who_purchased_edd" checked>
-                        <label for="any_product"><?php _e( 'Any Product', 'rsc' ); ?></label>
+                        <label for="any_product"><?php esc_html_e( 'Any Product', 'restricted-content' ); ?></label>
                     </div>
                     <?php $edd_products = get_posts( array(
                         'post_type' => 'download',
@@ -547,7 +563,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     if ( count( $edd_products ) ) { ?>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="edd_specific_product" value="specific_product" class="rsc_who_purchased_edd_radio" name="who_purchased_edd">
-                            <label for="specific_product"><?php _e( 'Specific Product', 'rsc' ); ?></label>
+                            <label for="specific_product"><?php esc_html_e( 'Specific Product', 'restricted-content' ); ?></label>
                         </div>
                     <?php } ?>
                 </div><!-- .rsc-ticket-type-purchased -->
@@ -556,51 +572,59 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php _e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div>
                 <?php $default_value = esc_attr( '[rsc_restrict_content allowed_to="edd" edd_options="product" edd_product="0"]' . rsc_get_default_admin_shortcode_message() . '[/rsc_restrict_content]' ); ?>
                 <div class="rsc-chosen-multiple specific_edd_product_selected content_availability_edd_users" style="display: none;">
                     <div class="tc-custom-chosen-select-wrap">
-                        <select data-placeholder="<?php esc_html_e( 'Select Product', 'rsc' ); ?>" multiple class="chosen-select" id="rsc_chosen_edd_users_specific_product">
+                        <select data-placeholder="<?php esc_attr_e( 'Select Product', 'restricted-content' ); ?>" multiple class="chosen-select" id="rsc_chosen_edd_users_specific_product">
                             <?php foreach ( $edd_products as $product ) { ?>
-                                <option value="<?php echo (int) $product->ID; ?>"><?php echo rsc_esc_html( $product->post_title ); ?></option>
+                                <option value="<?php echo (int) $product->ID; ?>"><?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                    echo rsc_esc_html( $product->post_title ); ?></option>
                             <?php } ?>
                         </select>
                     </div><!-- .tc-custom-chosen-select-wrap -->
                     <div class="rsc-ticket-type-purchased">
-                        <div class="rsc-input-text"><?php _e( 'Duration', 'rsc' ); ?></div>
+                        <div class="rsc-input-text"><?php esc_html_e( 'Duration', 'restricted-content' ); ?></div>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="edd_indefinitely" value="indefinitely" class="rsc_indefinit_time rsc_time_offer_shortcode_edd" name="rsc_time_offer" checked>
-                            <label for="indefinitely"><?php esc_html_e( 'Indefinitely', 'rsc' ); ?></label>
+                            <label for="indefinitely"><?php esc_html_e( 'Indefinitely', 'restricted-content' ); ?></label>
                         </div>
                         <div class="rsc-ticket-type-select-input">
                             <input type="radio" id="edd_limited_time" value="limited_time" class="rsc_limited_time_offer rsc_time_offer_shortcode_edd" name="rsc_time_offer">
-                            <label for="limited_time"><?php _e( 'Limited time after purchase', 'rsc' ); ?></label>
+                            <label for="limited_time"><?php esc_html_e( 'Limited time after purchase', 'restricted-content' ); ?></label>
                         </div>
                     </div>
                     <div class="rsc_edd_times_shortcode rsc_times_shortcode">
                         <label>
-                            <?php _e( 'Days:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Days:', 'restricted-content' ); ?><br/>
                             <select id="rsc_edd_limited_time_days">
                                 <?php for ( $day = apply_filters( 'rsc_edd_time_day_min', 0 ); $day <= apply_filters( 'rsc_edd_time_day_max', 365 ); $day++ ) { ?>
-                                    <option value="<?php echo esc_attr( $day ); ?>"><?php echo rsc_esc_html( $day ); ?></option>
+                                    <option value="<?php echo esc_attr( $day ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $day ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
                         <label>
-                            <?php _e( 'Hours:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Hours:', 'restricted-content' ); ?><br/>
                             <select id="rsc_edd_limited_time_hours">
                                 <?php for ( $hour = apply_filters( 'rsc_edd_time_hour_min', 0 ); $hour <= apply_filters( 'rsc_edd_time_hour_max', 24 ); $hour++ ) { ?>
-                                    <option value="<?php echo esc_attr( $hour ); ?>"><?php echo rsc_esc_html( $hour ); ?></option>
+                                    <option value="<?php echo esc_attr( $hour ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $hour ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
                         <label>
-                            <?php _e( 'Minutes:', 'rsc' ); ?><br/>
+                            <?php esc_html_e( 'Minutes:', 'restricted-content' ); ?><br/>
                             <select id="rsc_edd_limited_time_minutes">
                                 <?php for ( $minute = apply_filters( 'rsc_edd_time_minute_min', 0 ); $minute <= apply_filters( 'rsc_edd_time_minute_', 60 ); $minute++ ) { ?>
-                                    <option value="<?php echo esc_attr( $minute ); ?>"><?php echo rsc_esc_html( $minute ); ?></option>
+                                    <option value="<?php echo esc_attr( $minute ); ?>"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $minute ); ?></option>
                                 <?php } ?>
                             </select>
                         </label>
@@ -609,7 +633,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                         <div class="rsc-input-wrap">
                             <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                         </div>
-                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'rsc' ) ?></button>
+                        <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                     </div>
                 </div><?php
                 break;
@@ -619,7 +643,7 @@ if ( ! function_exists( 'rsc_generate_admin_box_content' ) ) {
                     <div class="rsc-input-wrap">
                         <input type="text" class="rsc-shortcode-input <?php echo esc_attr( $field_name ); ?>_input" value="<?php echo esc_attr( $default_value ); ?>"/>
                     </div>
-                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'rsc' ) ?></button>
+                    <button class="button-primary rsc_copy_button <?php echo esc_attr( $field_name ); ?>_button"><?php esc_html_e( 'Copy', 'restricted-content' ) ?></button>
                 </div><?php
                 break;
         }
@@ -690,7 +714,7 @@ if ( ! function_exists( 'rsc_sanitize_string' ) ) {
 
         } elseif ( is_string( $string ) ) {
 
-            if ( $string != strip_tags( $string ) || strpos( $string, "\n" ) !== FALSE ) { // String contain html tags
+            if ( $string != wp_strip_all_tags( $string ) || strpos( $string, "\n" ) !== FALSE ) { // String contain html tags
 
                 $string = stripslashes( $string );
 
@@ -854,7 +878,7 @@ if ( ! function_exists( 'rsc_sanitize_array2' ) ) {
 if ( ! function_exists( 'rsc_sanitize_url' ) ) {
 
     function rsc_sanitize_url( $url, $output = false ) {
-        $url = stripslashes( strip_tags( $url ) );
+        $url = stripslashes( wp_strip_all_tags( $url ) );
         $url = ( $output ) ? esc_url( $url ) : esc_url_raw( $url );
         return esc_url_raw( $url );
     }
@@ -872,7 +896,7 @@ if ( ! function_exists( 'rsc_esc_html' ) ) {
 
         if ( $html ) {
 
-            if ( $html == strip_tags( $html ) ) {
+            if ( $html == wp_strip_all_tags( $html ) ) {
                 return esc_html( $html );
 
             } else {

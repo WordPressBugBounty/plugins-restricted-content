@@ -13,9 +13,9 @@ function rsc_add_new_admin_section_for_simple_urls($sections){
   $sections['simple_urls'] = array(
     array(
       'name' => 'simple_urls_options',
-      'title' => __('Simple URLs', 'rsc'),
+      'title' => __('Simple URLs', 'restricted-content'),
       'subtitle' => '',
-      'header' => __('Set the type or redirection and redirection location for URLs defined in the Simple URL plugin.', 'rsc'),
+      'header' => __('Set the type or redirection and redirection location for URLs defined in the Simple URL plugin.', 'restricted-content'),
       'footer' => '',
       'description' => '',
       'has_save_button' => true,
@@ -36,24 +36,24 @@ function rsc_add_admin_simple_urls_fields($fields){
 
   $new_fields[] = array(
     'field_name' => 'rsc_simple_urls_type',
-    'field_title' => __('Redirection type', 'rsc'),
+    'field_title' => __('Redirection type', 'restricted-content'),
     'field_type' => 'select',
     'values' => array(
       'page' => 'Page',
       'url' => 'URL'
     ),
     'default_value' => 'url',
-    'tooltip' => __('Select a type of redirection', 'rsc'),
+    'tooltip' => __('Select a type of redirection', 'restricted-content'),
     'section' => 'simple_urls_options',
   );
 
   $new_fields[] = array(
     'field_name' => 'rsc_simple_urls_redirection_page',
-    'field_title' => __('Redirection Page', 'rsc'),
+    'field_title' => __('Redirection Page', 'restricted-content'),
     'field_type' => 'select',
     'values' => $pages_array,
     'default_value' => '',
-    'tooltip' => __('Set a page to which the users will be redirected if the URL is restricted.', 'rsc'),
+    'tooltip' => __('Set a page to which the users will be redirected if the URL is restricted.', 'restricted-content'),
     'section' => 'simple_urls_options',
     'conditional' => array(
         'field_name' => 'rsc_simple_urls_type',
@@ -65,11 +65,11 @@ function rsc_add_admin_simple_urls_fields($fields){
 
   $new_fields[] = array(
     'field_name' => 'rsc_simple_urls_redirection_url',
-    'field_title' => __('Redirection URL', 'rsc'),
+    'field_title' => __('Redirection URL', 'restricted-content'),
     'field_type' => 'text',
     'values' => '',
     'default_value' => site_url(),
-    'tooltip' => __('Set an URL to which the users will be redirected if the URL is restricted.', 'rsc'),
+    'tooltip' => __('Set an URL to which the users will be redirected if the URL is restricted.', 'restricted-content'),
     'section' => 'simple_urls_options',
     'conditional' => array(
         'field_name' => 'rsc_simple_urls_type',
@@ -86,7 +86,7 @@ function rsc_add_admin_simple_urls_fields($fields){
 add_action('rc_settings_new_menus', 'rsc_add_simple_urls_menu_item', 10, 1);
 
 function rsc_add_simple_urls_menu_item($menus){
-  $menus['simple_urls'] = __('Simple URLs', 'rsc');
+  $menus['simple_urls'] = __('Simple URLs', 'restricted-content');
   return $menus;
 }
 

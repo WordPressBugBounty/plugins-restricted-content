@@ -13,14 +13,16 @@ if ( isset( $_POST[ 'save_rsc_settings' ] ) ) {
     if ( check_admin_referer( 'save_settings' ) ) {
         if ( current_user_can( 'manage_options' ) || current_user_can( 'save_settings_cap' ) ) {
 
-            $rsc_settings = get_option( 'rsc_settings', array() );
-            update_option( 'rsc_settings', rsc_sanitize_array2( array_merge( $rsc_settings, $_POST[ 'rsc_settings' ] ), true ) );
+            $rsc_settings = get_option( 'rsc_settings', [] );
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized within rsc_sanitize_array2().
+            $rcs_settings_post_data = isset( $_POST[ 'rsc_settings' ] ) ? rsc_sanitize_array2( array_merge( $rsc_settings, $_POST[ 'rsc_settings' ] ), true ) : [];
+            update_option( 'rsc_settings', $rcs_settings_post_data );
 
             do_action( 'rsc_save_rsc_settings' );
-            $message = __( 'Settings data has been successfully saved.', 'rsc' );
+            $message = __( 'Settings data has been successfully saved.', 'restricted-content' );
 
         } else {
-            $message = __( 'You do not have required permissions for this action.', 'rsc' );
+            $message = __( 'You do not have required permissions for this action.', 'restricted-content' );
         }
     }
 }
@@ -28,21 +30,25 @@ $rsc_settings = get_option( 'rsc_settings', false );
 ?>
 <div class="wrap rc_wrap">
     <?php if ( isset( $message ) ) { ?>
-        <div id="message" class="updated fade"><p><?php echo rsc_esc_html( $message ); ?></p></div>
+        <div id="message" class="updated fade"><p><?php
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+            echo rsc_esc_html( $message ); ?></p></div>
     <?php } ?>
     <div id="poststuff" class="metabox-holder tc-settings">
         <?php
         $general_setting_url = add_query_arg( array(
-            'page' => sanitize_key( $_GET[ 'page' ] ),
+            'page' => isset( $_GET[ 'page' ] ) ? sanitize_key( $_GET[ 'page' ] ) : 1,
             'tab' => $tab,
         ), admin_url( 'admin.php' ) );
         ?>
         <form id="tc-restricted-content-settings" method="post" action="<?php echo esc_url( $general_setting_url ); ?>">
             <?php if ( $tab !== 'welcome' ) { ?>
                 <div class="rsc-options-header">
-                    <p><?php echo isset( $section[ 'header' ] ) ? rsc_esc_html( $section[ 'header' ] ) : ''; ?></p>
+                    <p><?php
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                        echo isset( $section[ 'header' ] ) ? rsc_esc_html( $section[ 'header' ] ) : ''; ?></p>
                     <?php if ( ! rsc_iw_is_wl() ) { ?>
-                        <img src="<?php echo esc_url( $rsc->plugin_url ); ?>/assets/images/general-header@2x.png" width="399"/>
+                        <img src="<?php echo esc_url( $rsc->plugin_url ); ?>/assets/images/general-header-2x.png" width="399"/>
                     <?php } ?>
                 </div>
             <?php } ?>
@@ -60,7 +66,9 @@ $rsc_settings = get_option( 'rsc_settings', false );
                     if ( $tab == 'shortcodes' || $tab == 'login_form' ) { ?>
                         <div class="rsc-fullwidth-wrap">
                             <?php if ( isset( $section[ 'description' ] ) && ! empty( $section[ 'description' ] ) ) { ?>
-                                <span class="rsc_section_description"><?php echo rsc_esc_html( $section[ 'description' ] ); ?></span><?php
+                                <span class="rsc_section_description"><?php
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                    echo rsc_esc_html( $section[ 'description' ] ); ?></span><?php
                             }
 
                             $fields = $general_settings->get_settings_general_fields();
@@ -75,7 +83,9 @@ $rsc_settings = get_option( 'rsc_settings', false );
                                 if ( isset( $field[ 'section' ] ) && $field[ 'section' ] == $section[ 'name' ] ) {
                                     do_action( 'rsc_before_settings_general_field_type_check', $field ); ?>
                                     <div class="<?php echo esc_attr( $rsc_class ); ?>">
-                                        <h3><?php echo rsc_esc_html( $field[ 'field_title' ] ); ?>
+                                        <h3><?php
+                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                            echo rsc_esc_html( $field[ 'field_title' ] ); ?>
                                             <?php if ( $tab == 'shortcodes' ) { ?>
                                                 <a title="<?php echo esc_attr( $field[ 'tooltip' ] ); ?>" class="rsc_tooltip_hover"></a>
                                             <?php } ?>
@@ -85,7 +95,9 @@ $rsc_settings = get_option( 'rsc_settings', false );
                                             <div class="rsc-tooltip-wrap">
                                                 <div class="rsc-tooltip"></div>
                                                 <div class="rsc-tooltip-text">
-                                                    <p><?php echo rsc_esc_html( $field[ 'tooltip' ] ); ?></p>
+                                                    <p><?php
+                                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                                        echo rsc_esc_html( $field[ 'tooltip' ] ); ?></p>
                                                 </div>
                                             </div>
                                         <?php } ?>
@@ -98,9 +110,13 @@ $rsc_settings = get_option( 'rsc_settings', false );
                         <div id="<?php echo esc_attr( $section[ 'name' ] ); ?>" class="postbox">
                             <div class="inside">
                                 <?php if ( isset( $section[ 'description' ] ) && ! empty( $section[ 'description' ] ) && $tab == 'bot_exclusion' ) { ?>
-                                    <span class="rsc_section_description"><?php echo rsc_esc_html( $section[ 'description' ] ); ?></span>
+                                    <span class="rsc_section_description"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $section[ 'description' ] ); ?></span>
                                 <?php } else { ?>
-                                    <span class="description"><?php echo rsc_esc_html( $section[ 'description' ] ); ?></span>
+                                    <span class="description"><?php
+                                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                        echo rsc_esc_html( $section[ 'description' ] ); ?></span>
                                 <?php } ?>
                                 <table class="form-table">
                                     <?php
@@ -110,11 +126,15 @@ $rsc_settings = get_option( 'rsc_settings', false );
                                             <tr valign="top" id="<?php echo esc_attr( $field[ 'field_name' ] . '_holder' ); ?>" <?php RSC_Fields::conditionals( $field ); ?>>
                                                 <th scope="row" class="rsc-options-info">
                                                     <label for="<?php echo esc_attr( $field[ 'field_name' ] ); ?>">
-                                                        <h3><?php echo rsc_esc_html( $field[ 'field_title' ] ); ?></h3>
+                                                        <h3><?php
+                                                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                                            echo rsc_esc_html( $field[ 'field_title' ] ); ?></h3>
                                                         <div class="rsc-tooltip-wrap">
                                                             <div class="rsc-tooltip"></div>
                                                             <div class="rsc-tooltip-text">
-                                                                <p><?php echo rsc_esc_html( $field[ 'tooltip' ] ); ?></p>
+                                                                <p><?php
+                                                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is being escaped/sanitized using rsc_esc_html().
+                                                                    echo rsc_esc_html( $field[ 'tooltip' ] ); ?></p>
                                                             </div>
                                                         </div>
                                                     </label>
@@ -135,7 +155,7 @@ $rsc_settings = get_option( 'rsc_settings', false );
             </div>
             <?php
             if ( isset( $sections[ 0 ][ 'has_save_button' ] ) && $sections[ 0 ][ 'has_save_button' ] == true ) {
-                submit_button( __( 'Save Settings', 'rsc' ), 'primary', 'save_rsc_settings' );
+                submit_button( __( 'Save Settings', 'restricted-content' ), 'primary', 'save_rsc_settings' );
             }
             ?>
         </form>

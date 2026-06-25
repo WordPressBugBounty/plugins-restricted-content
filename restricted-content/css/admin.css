@@ -1711,7 +1711,7 @@ only screen and (min-device-pixel-ratio: 2) {
     .rsc-already-featured:before,
     .rsc-premium-features-button .rsc-premium-icon:before,
     .rsc-tooltip:before {
-        background-image: url('../assets/images/sprite@2x.png');
+        background-image: url('../assets/images/sprite-2x.png');
         background-repeat: no-repeat;
         background-size: 16px auto;
     }
